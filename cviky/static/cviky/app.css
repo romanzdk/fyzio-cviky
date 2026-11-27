@@ -361,3 +361,18 @@ fieldset.weekdays { border: 0; margin: 0; padding: 0; min-width: 0; }
   .hero h1 { font-size: 44px; }
   .steps-grid { grid-template-columns: repeat(3, 1fr); }
 }
+
+.previews { display: grid; gap: 8px; margin-bottom: 32px; }
+.previews .preview { margin-bottom: 0; width: 100%; }
+.preview .figures figure { box-shadow: none; background: var(--bg); }
+.preview .figures img { height: 80px; }
+@media (min-width: 768px) {
+  .previews { grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; max-width: 54rem; margin: 0 auto 32px; }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root { --tile: #dfe7e2; --tile-text: #3f4b44; }
+  .figures figure, .preview .figures figure, .thumb:has(img) { background: var(--tile); }
+  .figures figcaption { color: var(--tile-text); }
+}
+.preview .pill { white-space: normal; }
