@@ -1,0 +1,79 @@
+name: CI
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env: {POSTGRES_USER: cviky, POSTGRES_PASSWORD: cviky, POSTGRES_DB: cviky}
+        ports: ["5432:5432"]
+        options: --health-cmd pg_isready --health-interval 2s --health-retries 20
+    env:
+      DATABASE_URL: postgres://cviky:cviky@localhost:5432/cviky
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+      - run: uv sync --frozen
+      - run: uv run ruff check .
+      - run: uv run python manage.py makemigrations --check --dry-run
+      - run: uv run pytest -q
+
+  image:
+    needs: test
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions: {contents: read, packages: write}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/romanzdk/fyzio-cviky:latest
+            ghcr.io/romanzdk/fyzio-cviky:${{ github.sha }}
+
+  deploy:
+    needs: image
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && vars.DEPLOY_HOST != ''
+    runs-on: ubuntu-latest
+    permissions: {contents: read, packages: read}
+    concurrency: {group: deploy, cancel-in-progress: false}
+    env:
+      HOST: esk@${{ vars.DEPLOY_HOST }}
+      IMAGE: ghcr.io/romanzdk/fyzio-cviky:${{ github.sha }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: SSH key
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519 && chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "${{ secrets.DEPLOY_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+      - name: Copy compose file
+        run: scp deploy/docker-compose.yml "$HOST:/opt/cviky/"
+      - name: Pull image and restart
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | ssh "$HOST" "docker login ghcr.io -u '${{ github.actor }}' --password-stdin"
+          ssh "$HOST" "CVIKY_IMAGE=$IMAGE bash -s" <<'SH'
+            set -e
+            cd /opt/cviky
+            trap 'docker logout ghcr.io >/dev/null' EXIT
+            docker network inspect cviky >/dev/null 2>&1 || docker network create cviky
+            docker compose pull web
+            docker compose up -d --wait db
+            docker compose up -d --remove-orphans
+            docker tag "$CVIKY_IMAGE" ghcr.io/romanzdk/fyzio-cviky:latest
+          SH
+      - name: Health check
+        if: vars.DEPLOY_URL != ''
+        run: curl -fsS --retry 20 --retry-delay 3 --retry-all-errors "${{ vars.DEPLOY_URL }}/healthz"

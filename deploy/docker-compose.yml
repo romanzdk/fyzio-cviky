@@ -1,0 +1,52 @@
+# /opt/cviky on the Vozopis server. Caddy from /opt/esk reaches `web` over the shared external network `cviky`.
+x-logging: &logging
+  driver: json-file
+  options: {max-size: 10m, max-file: "3"}
+
+services:
+  db:
+    image: postgres:17
+    logging: *logging
+    restart: unless-stopped
+    env_file: .env
+    command: postgres -c shared_buffers=32MB -c max_connections=20
+    volumes: [pgdata:/var/lib/postgresql/data]
+    mem_limit: 192m
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
+      interval: 5s
+      retries: 20
+
+  web:
+    image: ${CVIKY_IMAGE:-ghcr.io/romanzdk/fyzio-cviky:latest}
+    logging: *logging
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DJANGO_DEBUG: "0"
+      DJANGO_ALLOWED_HOSTS: cviky.romanzdk.com
+      DJANGO_CSRF_TRUSTED_ORIGINS: https://cviky.romanzdk.com
+    mem_limit: 256m
+    depends_on:
+      db: {condition: service_healthy}
+    networks:
+      default: {}
+      cviky: {aliases: [cviky-web]}
+
+  scheduler:
+    image: ${CVIKY_IMAGE:-ghcr.io/romanzdk/fyzio-cviky:latest}
+    logging: *logging
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DJANGO_DEBUG: "0"
+    command: ["sh", "-c", "while true; do python manage.py send_reminders || echo send_reminders failed; sleep 60; done"]
+    mem_limit: 128m
+    depends_on: [web]
+
+networks:
+  cviky:
+    external: true
+
+volumes:
+  pgdata:
