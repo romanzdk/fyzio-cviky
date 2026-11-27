@@ -36,6 +36,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 
 html { -webkit-text-size-adjust: 100%; }
 
@@ -75,6 +76,7 @@ p { margin: 0 0 12px; }
   box-shadow: var(--shadow);
 }
 
+.card > h2 + *, .card > .card-head + * { margin-top: 8px; }
 .card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .card.warn { background: var(--warn-soft); }
 .card.warn h2 { color: var(--warn); }
@@ -228,7 +230,6 @@ form ul:not(.errorlist) { padding-left: 18px; font-size: 13px; color: var(--mute
 .btn.ghost { background: transparent; color: var(--muted); }
 .btn-row { display: flex; gap: 8px; }
 .btn-row .btn { margin-top: 8px; }
-.filters button[type="submit"] { display: none; }
 
 .fab {
   position: fixed;

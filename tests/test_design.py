@@ -45,3 +45,9 @@ def test_login_page_has_no_tabbar(client):
 def test_dictate_button_shown_on_home_but_not_on_create(logged_in):
     assert 'class="fab"' in logged_in.get(reverse("home")).content.decode()
     assert 'class="fab"' not in logged_in.get(reverse("exercise_create")).content.decode()
+
+
+@pytest.mark.django_db
+def test_login_is_czech_even_for_english_browser(client):
+    html = client.get(reverse("login"), HTTP_ACCEPT_LANGUAGE="en-US,en;q=0.9").content.decode()
+    assert "Uživatelské jméno" in html
