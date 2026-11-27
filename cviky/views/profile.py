@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 
@@ -11,6 +12,7 @@ def profile(request):
         if form.is_valid():
             request.user.neglect_days = form.cleaned_data["neglect_days"]
             request.user.save(update_fields=["neglect_days"])
+            messages.success(request, "Uloženo")
             return redirect("profile")
     else:
         form = ProfileForm(initial={"neglect_days": request.user.neglect_days})

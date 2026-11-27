@@ -106,3 +106,20 @@ def test_series_delete_warns_about_history(logged_in, django_user_model):
     series = Series.objects.create(user=user, name="S")
     html = logged_in.get(f"/serie/{series.pk}/smazat/").content.decode()
     assert "historie odkliknutí" in html
+
+
+@pytest.mark.django_db
+def test_exercise_form_is_czech(logged_in, django_user_model):
+    user = django_user_model.objects.get(username="design")
+    exercise = Exercise.objects.create(user=user, title="Krk")
+    html = logged_in.get(f"/cviky/{exercise.pk}/upravit/").content.decode()
+    for label in ("Název", "Oblast", "Poloha", "Štítky", "Postup", "Na co dát pozor", "Opakování"):
+        assert f">{label}:</label>" in html
+    assert "Select an option" not in html
+    assert "— nevybráno —" in html
+
+
+@pytest.mark.django_db
+def test_profile_save_shows_confirmation(logged_in):
+    response = logged_in.post("/profil/", {"neglect_days": 5}, follow=True)
+    assert "Uloženo" in response.content.decode()
