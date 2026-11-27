@@ -2,6 +2,8 @@ import html
 
 import pytest
 
+from cviky.backends import MAX_FAILURES, WINDOW_SECONDS
+
 
 @pytest.mark.django_db
 def test_anonymous_visitor_sees_landing_page(client):
@@ -117,3 +119,9 @@ def test_saving_profile_sets_no_extra_cookie(client, django_user_model):
     client.force_login(django_user_model.objects.create_user(username="c", password="SilneHeslo123"))
     response = client.post("/profil/", {"neglect_days": 5})
     assert "messages" not in response.cookies
+
+
+def test_privacy_page_matches_login_throttle(client):
+    page = html.unescape(client.get("/soukromi/").content.decode())
+    assert f"nejvýš {WINDOW_SECONDS // 60} minut" in page
+    assert f"Po {MAX_FAILURES} chybných pokusech" in page

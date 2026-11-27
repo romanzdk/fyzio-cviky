@@ -254,6 +254,7 @@ def test_detail_shows_original_text(logged_in, user):
     content = logged_in.get(reverse("exercise_detail", args=[exercise.pk])).content.decode()
     assert "Původní text" in content
     assert "původní diktát" in content
+    assert "umělá inteligence" in content
 
 
 @pytest.mark.parametrize(

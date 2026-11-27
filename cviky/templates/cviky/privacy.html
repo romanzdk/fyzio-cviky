@@ -13,30 +13,32 @@
 
 <h2>Jaká data ukládám</h2>
 <ul>
-  <li><strong>Účet:</strong> uživatelské jméno, heslo (jen jako otisk, tzv. hash, samotné heslo neznám) a datum registrace.</li>
+  <li><strong>Účet:</strong> uživatelské jméno, heslo (jen jako otisk, tzv. hash, samotné heslo neznám), datum registrace a posledního přihlášení a pozvánka, přes kterou účet vznikl (a kdy byla použitá).</li>
+  <li><strong>Přihlášení:</strong> záznam o přihlášení (tzv. sezení) v databázi, aby tě appka poznala. Platí rok, nebo dokud se neodhlásíš.</li>
   <li><strong>Cviky:</strong> text, který nadiktuješ, a karta, která z něj vznikne (název, oblast těla, poloha, postup, na co dát pozor, opakování). Tyto popisy jsou <strong>údaje o tvém zdraví</strong>.</li>
-  <li><strong>Série a cvičení:</strong> názvy sérií, dny a časy připomínek a kdy jsi který cvik odklikl.</li>
-  <li><strong>Upozornění:</strong> když je zapneš, uložím adresu, kterou pro doručení připomínek vydá tvůj prohlížeč (Apple, Google, Mozilla nebo Microsoft).</li>
+  <li><strong>Série a odkliknuté cviky:</strong> názvy sérií, dny a časy připomínek a kdy byl který cvik odkliknutý.</li>
+  <li><strong>Připomínky:</strong> když je zapneš, uložím adresu, kterou pro jejich doručení vydá tvůj prohlížeč (Apple, Google, Mozilla nebo Microsoft), a dva šifrovací klíče k ní, aby obsah připomínky přečetlo jen tvoje zařízení.</li>
+  <li><strong>IP adresa:</strong> po neúspěšném pokusu o přihlášení ji appka nejvýš 15 minut drží v paměti serveru (ne v databázi). Po 10 chybných pokusech z jedné adresy tak zablokuje další hádání hesla.</li>
 </ul>
 
 <h2>Proč a na jakém základě</h2>
-<p>Data potřebuju, aby appka fungovala: ukázala tvoje cviky, připomněla je a spočítala, co jsi dlouho nedělal (čl. 6 odst. 1 písm. b GDPR). Údaje o zdraví zpracovávám jen s tvým výslovným souhlasem, který dáváš při registraci (čl. 9 odst. 2 písm. a GDPR). Souhlas můžeš kdykoli odvolat: napiš mi a smažu tvůj účet i všechna data. Data neprodávám, nepoužívám k reklamě a nikomu je nedávám kromě služeb níže.</p>
+<p>Data potřebuju, aby appka fungovala: ukázala tvoje cviky, připomněla je a spočítala, které cviky jsou dlouho nedělané (čl. 6 odst. 1 písm. b GDPR). Údaje o zdraví zpracovávám jen s tvým výslovným souhlasem, který dáváš při registraci (čl. 9 odst. 2 písm. a GDPR). Souhlas můžeš kdykoli odvolat: napiš mi a smažu tvůj účet i všechna data. Data neprodávám, nepoužívám k reklamě a nikomu je nedávám kromě služeb níže.</p>
 
 <h2>Komu data posílám</h2>
 <ul>
   <li><strong>Hetzner Online GmbH</strong> – na jejich serveru v Helsinkách (Finsko) běží appka i databáze.</li>
   <li><strong>OpenRouter (USA)</strong> – text diktátu pošlu jazykovému modelu, který z něj udělá kartu cviku. Posílám jen ten text, ne tvoje jméno ani účet. Volám ho s nastavením „zero data retention“: OpenRouter ani poskytovatel modelu text neukládají a nepoužívají ho k trénování. OpenRouter sídlí v USA a přenos údajů kryjí standardní smluvní doložky EU (SCC).</li>
-  <li><strong>Apple, Google, Mozilla nebo Microsoft</strong> (podle tvého zařízení) – doručí připomínku. Ta obsahuje název série a počet cviků.</li>
-  <li><strong>GoatCounter</strong> – počítá návštěvy stránek. Nepoužívá cookies, neukládá tvou IP adresu ani nic do prohlížeče. Data má na serverech Hetzner ve Finsku a Německu.</li>
+  <li><strong>Apple, Google, Mozilla nebo Microsoft</strong> (podle tvého zařízení) – doručí připomínku. Ta obsahuje název série, počet cviků a počet dlouho nedělaných cviků.</li>
+  <li><strong>GoatCounter</strong> – počítá návštěvy stránek. Nepoužívá cookies a neukládá tvou IP adresu. Při načtení stránky jen přečte z úložiště prohlížeče (localStorage) údaj <code>skipgc</code>, jestli je v tomto prohlížeči měření vypnuté. Zapíše ho tam, jen když měření vypneš. Data má na serverech Hetzner ve Finsku a Německu.</li>
 </ul>
 
 <h2>Cookies</h2>
-<p>Používám jen dvě nezbytné cookies: jednu pro přihlášení (platí rok, abys nemusel/a zadávat heslo) a jednu pro ochranu formulářů. Žádné reklamní ani sledovací cookies, proto tu není cookie lišta.</p>
+<p>Používám jen dvě nezbytné cookies: jednu pro přihlášení (platí rok, ať nemusíš pořád zadávat heslo) a jednu pro ochranu formulářů. Žádné reklamní ani sledovací cookies, proto tu není cookie lišta.</p>
 
 <h2>Jak dlouho</h2>
 <p>Data držím, dokud máš účet. Když mě požádáš o smazání, smažu účet i všechna data bez zbytečného odkladu, nejpozději do 30 dnů. Technické záznamy o chybách neobsahují texty cviků a průběžně se přepisují.</p>
 
 <h2>Tvoje práva</h2>
-<p>Můžeš ode mě chtít přehled nebo kopii svých dat, jejich opravu (cviky si upravíš i sám/sama v appce), smazání nebo omezení zpracování a můžeš odvolat souhlas. Stačí napsat na <a href="{{ mailto }}">{{ email }}</a>. Když se ti nebude líbit, jak s daty zacházím, můžeš si stěžovat u Úřadu pro ochranu osobních údajů (<a href="https://uoou.gov.cz" rel="noopener">uoou.gov.cz</a>).</p>
+<p>Můžeš ode mě chtít přehled nebo kopii svých dat, jejich opravu (cviky si upravíš i přímo v appce), smazání nebo omezení zpracování a můžeš odvolat souhlas. Stačí napsat na <a href="{{ mailto }}">{{ email }}</a>. Když se ti nebude líbit, jak s daty zacházím, můžeš si stěžovat u Úřadu pro ochranu osobních údajů (<a href="https://uoou.gov.cz" rel="noopener">uoou.gov.cz</a>).</p>
 </article>
 {% endblock %}
