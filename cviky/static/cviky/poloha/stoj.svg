@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 140" role="img">
+<title>stoj</title>
+<circle cx="60" cy="26" r="13" fill="none" stroke="#455a64" stroke-width="8"/>
+<path d="M60 39 L60 92" stroke="#455a64" stroke-width="8" stroke-linecap="round" fill="none"/>
+<path d="M60 52 L34 84 M60 52 L86 84" stroke="#455a64" stroke-width="8" stroke-linecap="round" fill="none"/>
+<path d="M60 92 L46 130 M60 92 L74 130" stroke="#455a64" stroke-width="8" stroke-linecap="round" fill="none"/>
+<path d="M30 134 L90 134" stroke="#455a64" stroke-width="4" fill="none"/>
+</svg>

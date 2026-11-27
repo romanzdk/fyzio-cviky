@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 224" role="img">
+<title>ruce</title>
+<circle cx="60" cy="26" r="18" fill="none" stroke="#455a64" stroke-width="9"/><rect x="52" y="42" width="16" height="14" rx="4" fill="none" stroke="#455a64" stroke-width="8"/><rect x="44" y="54" width="32" height="94" rx="14" fill="none" stroke="#455a64" stroke-width="9"/><path d="M46 66 L18 148" stroke="#455a64" stroke-width="9" stroke-linecap="round" fill="none"/><path d="M74 66 L102 148" stroke="#455a64" stroke-width="9" stroke-linecap="round" fill="none"/><path d="M52 148 L48 212" stroke="#455a64" stroke-width="9" stroke-linecap="round" fill="none"/><path d="M68 148 L72 212" stroke="#455a64" stroke-width="9" stroke-linecap="round" fill="none"/>
+<circle cx="18" cy="150" r="12" fill="#e05a5a" fill-opacity="0.6" stroke="none"/><circle cx="102" cy="150" r="12" fill="#e05a5a" fill-opacity="0.6" stroke="none"/>
+</svg>

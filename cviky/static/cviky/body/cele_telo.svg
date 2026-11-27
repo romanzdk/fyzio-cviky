@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 224" role="img">
+<title>cele_telo</title>
+<circle cx="60" cy="26" r="18" fill="#e05a5a" fill-opacity="0.6"/>
+<rect x="52" y="40" width="16" height="16" rx="5" fill="#e05a5a" fill-opacity="0.6" stroke="none"/>
+<rect x="44" y="52" width="32" height="96" rx="14" fill="#e05a5a" fill-opacity="0.6" stroke="none"/>
+<path d="M46 66 L18 148" stroke="#e05a5a" stroke-width="9" stroke-linecap="round" stroke-opacity="0.6" fill="none"/>
+<path d="M74 66 L102 148" stroke="#e05a5a" stroke-width="9" stroke-linecap="round" stroke-opacity="0.6" fill="none"/>
+<path d="M52 148 L48 212" stroke="#e05a5a" stroke-width="9" stroke-linecap="round" stroke-opacity="0.6" fill="none"/>
+<path d="M68 148 L72 212" stroke="#e05a5a" stroke-width="9" stroke-linecap="round" stroke-opacity="0.6" fill="none"/>
+</svg>

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Smazat cvik{% endblock %}
+
+{% block content %}
+<h1>Smazat cvik</h1>
+<p>Opravdu smazat cvik „{{ exercise.title }}“?</p>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit">Smazat</button>
+</form>
+<p><a href="{% url 'exercise_detail' exercise.pk %}">Zrušit</a></p>
+{% endblock %}

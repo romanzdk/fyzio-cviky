@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Cviky{% endblock %}
+
+{% block content %}
+<h1>Cviky</h1>
+
+<form method="get">
+  <label for="id_q">Hledat</label>
+  <input id="id_q" type="search" name="q" value="{{ q }}">
+  <label for="id_area">Oblast</label>
+  <select id="id_area" name="area">
+    <option value="">vše</option>
+    {% for key, label in areas %}<option value="{{ key }}"{% if key == area %} selected{% endif %}>{{ label }}</option>{% endfor %}
+  </select>
+  <label for="id_position">Poloha</label>
+  <select id="id_position" name="position">
+    <option value="">vše</option>
+    {% for key, label in positions %}<option value="{{ key }}"{% if key == position %} selected{% endif %}>{{ label }}</option>{% endfor %}
+  </select>
+  <button type="submit">Hledat</button>
+</form>
+
+{% for e in exercises %}
+<div class="card">
+  {% include "cviky/ilustrace.html" with area=e.area position=e.position %}
+  <h2><a href="{% url 'exercise_detail' e.pk %}">{{ e.title }}</a></h2>
+  {% if e.tags %}<p>{{ e.tags|join:", " }}</p>{% endif %}
+</div>
+{% empty %}
+<p>Zatím žádné cviky.</p>
+{% endfor %}
+
+<p><a href="{% url 'exercise_create' %}">Přidat další cvik</a></p>
+{% endblock %}

@@ -3,7 +3,14 @@ from django.contrib.auth.admin import UserAdmin
 from django.urls import reverse
 from django.utils.html import format_html
 
-from cviky.models import Invite, User
+from cviky.models import Exercise, Invite, User
+
+
+@admin.register(Exercise)
+class ExerciseAdmin(admin.ModelAdmin):
+    list_display = ("title", "user", "area", "position", "created_at")
+    list_filter = ("area", "position")
+    search_fields = ("title", "tags")
 
 
 @admin.register(Invite)

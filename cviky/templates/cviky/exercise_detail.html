@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}{{ exercise.title }}{% endblock %}
+
+{% block content %}
+<h1>{{ exercise.title }}</h1>
+{% include "cviky/ilustrace.html" with area=exercise.area position=exercise.position %}
+{% if exercise.tags %}<p>{{ exercise.tags|join:", " }}</p>{% endif %}
+{% if exercise.area %}<p>Oblast: {{ exercise.get_area_display }}</p>{% endif %}
+{% if exercise.position %}<p>Poloha: {{ exercise.get_position_display }}</p>{% endif %}
+{% if exercise.reps %}<p>Opakování: {{ exercise.reps }}</p>{% endif %}
+{% if exercise.steps %}<h2>Postup</h2><p>{{ exercise.steps|linebreaksbr }}</p>{% endif %}
+{% if exercise.cautions %}<h2>Opatření</h2><p>{{ exercise.cautions|linebreaksbr }}</p>{% endif %}
+
+<p>
+  <a href="{% url 'exercise_create' %}">Přidat další cvik</a>
+</p>
+<p>
+  <a href="{% url 'exercise_edit' exercise.pk %}">Upravit</a>
+  <a href="{% url 'exercise_delete' exercise.pk %}">Smazat</a>
+</p>
+{% endblock %}

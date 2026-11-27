@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 140" role="img">
+<title>ctyri</title>
+<circle cx="24" cy="44" r="13" fill="none" stroke="#455a64" stroke-width="8"/>
+<path d="M37 50 L88 50" stroke="#455a64" stroke-width="8" stroke-linecap="round" fill="none"/>
+<path d="M52 50 L52 84 M74 50 L74 84" stroke="#455a64" stroke-width="8" stroke-linecap="round" fill="none"/>
+<path d="M88 50 L104 84" stroke="#455a64" stroke-width="8" stroke-linecap="round" fill="none"/>
+<path d="M16 84 L112 84" stroke="#455a64" stroke-width="4" fill="none"/>
+</svg>

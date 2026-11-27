@@ -1,0 +1,3 @@
+{% load static cviky_extras %}
+{% if area %}<img class="ilustrace" src="{% static 'cviky/body/'|add:area|add:'.svg' %}" alt="{{ area|area_label }}">{% endif %}
+{% if position %}<img class="ilustrace" src="{% static 'cviky/poloha/'|add:position|add:'.svg' %}" alt="{{ position|position_label }}">{% endif %}

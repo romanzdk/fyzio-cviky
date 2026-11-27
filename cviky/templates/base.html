@@ -13,10 +13,19 @@
   input { width: 100%; padding: 0.5rem; box-sizing: border-box; font: inherit; }
   button { margin-top: 1rem; padding: 0.6rem 1rem; font: inherit; }
   .errors { color: #b00020; }
+  .hint { color: #555; font-size: 0.9rem; }
+  textarea { width: 100%; padding: 0.5rem; box-sizing: border-box; font: inherit; }
+  nav { display: flex; gap: 1rem; margin-bottom: 1rem; }
+  .card { border: 1px solid #ccc; border-radius: 0.5rem; padding: 0.75rem 1rem; margin: 0.75rem 0; }
+  .ilustrace { display: inline-block; vertical-align: top; width: 6rem; height: auto; margin-right: 0.5rem; }
 </style>
 </head>
 <body>
 <main>
+<nav>
+  <a href="{% url 'home' %}">Dnes</a>
+  <a href="{% url 'exercise_list' %}">Cviky</a>
+</nav>
 {% block content %}{% endblock %}
 </main>
 </body>
