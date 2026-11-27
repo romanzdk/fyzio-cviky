@@ -20,9 +20,10 @@ self.addEventListener('notificationclick', function (event) {
     self.clients
       .matchAll({ type: 'window', includeUncontrolled: true })
       .then(function (clientList) {
+        var target = new URL(url, self.location.origin).href;
         for (var i = 0; i < clientList.length; i++) {
           var client = clientList[i];
-          if (client.url === url && 'focus' in client) {
+          if (client.url === target && 'focus' in client) {
             return client.focus();
           }
         }

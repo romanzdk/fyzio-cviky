@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -54,10 +55,11 @@ def _form(request, series=None):
     if request.method == "POST":
         form = SeriesForm(request.POST, instance=series)
         if form.is_valid():
-            series = form.save(commit=False)
-            series.user = request.user
-            series.save()
-            _sync_items(request, series)
+            with transaction.atomic():
+                series = form.save(commit=False)
+                series.user = request.user
+                series.save()
+                _sync_items(request, series)
             return redirect("series_list")
     else:
         form = SeriesForm(instance=series)

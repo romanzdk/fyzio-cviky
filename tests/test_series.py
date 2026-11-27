@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from cviky.models import Exercise, Series, SeriesExercise
+from cviky.views import series as series_views
 
 User = get_user_model()
 
@@ -178,3 +179,25 @@ def test_other_users_serie_filter_is_ignored(logged_in, user, other):
     response = logged_in.get(reverse("exercise_list"), {"serie": foreign.pk})
     assert response.status_code == 200
     assert "Můj cvik" in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_reminder_without_weekdays_is_rejected(logged_in, user):
+    exercise = Exercise.objects.create(user=user, title="A")
+    response = logged_in.post(reverse("series_create"), _series_data([exercise], weekdays=[]))
+    assert response.status_code == 200
+    assert "Vyber aspoň jeden den, jinak připomínka nepřijde." in response.content.decode()
+    assert Series.objects.count() == 0
+
+
+@pytest.mark.django_db
+def test_series_save_rolls_back_when_items_fail(logged_in, user, monkeypatch):
+    exercise = Exercise.objects.create(user=user, title="A")
+
+    def boom(request, series):
+        raise RuntimeError("boom")
+
+    monkeypatch.setattr(series_views, "_sync_items", boom)
+    with pytest.raises(RuntimeError):
+        logged_in.post(reverse("series_create"), _series_data([exercise]))
+    assert Series.objects.count() == 0

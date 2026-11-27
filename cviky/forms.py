@@ -28,6 +28,14 @@ class SeriesForm(forms.ModelForm):
         fields = ["name", "weekdays", "remind_at"]
         widgets = {"remind_at": forms.TimeInput(attrs={"type": "time"})}
 
+    def clean(self):
+        cleaned = super().clean()
+        if cleaned.get("remind_at") and not cleaned.get("weekdays"):
+            raise forms.ValidationError(
+                "Vyber aspoň jeden den, jinak připomínka nepřijde."
+            )
+        return cleaned
+
 
 class ProfileForm(forms.Form):
     neglect_days = forms.IntegerField(

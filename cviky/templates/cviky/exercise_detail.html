@@ -11,6 +11,7 @@
 {% if exercise.reps %}<p>Opakování: {{ exercise.reps }}</p>{% endif %}
 {% if exercise.steps %}<h2>Postup</h2><p>{{ exercise.steps|linebreaksbr }}</p>{% endif %}
 {% if exercise.cautions %}<h2>Opatření</h2><p>{{ exercise.cautions|linebreaksbr }}</p>{% endif %}
+{% if exercise.original_text %}<h2>Původní text</h2><p>{{ exercise.original_text|linebreaksbr }}</p>{% endif %}
 
 <p>
   <a href="{% url 'exercise_create' %}">Přidat další cvik</a>

@@ -10,7 +10,7 @@ from cviky.choices import AREAS, POSITIONS
 logger = logging.getLogger(__name__)
 
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
-TIMEOUT = 30.0
+TIMEOUT = httpx.Timeout(20.0, connect=5.0)
 
 AREA_KEYS = [key for key, _ in AREAS]
 POSITION_KEYS = [key for key, _ in POSITIONS]
@@ -61,6 +61,8 @@ def _response_schema() -> dict:
 
 
 def _normalize_tags(tags) -> list[str]:
+    if isinstance(tags, str):
+        tags = tags.split(",")
     result: list[str] = []
     for tag in tags or []:
         normalized = str(tag).strip().lower()

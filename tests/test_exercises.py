@@ -184,6 +184,68 @@ def test_delete_requires_post_and_removes(logged_in, user):
     assert not Exercise.objects.filter(pk=exercise.pk).exists()
 
 
+LONG_TEXT = "Pomalu otáčej hlavu do strany a drž ramena uvolněná po celou dobu cvičení, dýchej klidně"
+PREFILLED_TITLE = "Pomalu otáčej hlavu do strany a drž ramena uvolněná po celou…"
+AUTOFILL_NOTE = "Automatické zpracování se nepovedlo, doplň kartu ručně."
+
+
+@pytest.mark.django_db
+def test_empty_draft_shows_original_text_prefilled_title_and_note(logged_in, monkeypatch):
+    _mock_draft(monkeypatch, ExerciseDraft())
+    response = logged_in.post(reverse("exercise_create"), {"step": "dictate", "text": LONG_TEXT})
+    assert response.status_code == 200
+    content = response.content.decode()
+    assert "Původní text" in content
+    assert LONG_TEXT in content
+    assert PREFILLED_TITLE in content
+    assert AUTOFILL_NOTE in content
+
+
+@pytest.mark.django_db
+def test_empty_draft_saves_without_retyping(logged_in, monkeypatch):
+    _mock_draft(monkeypatch, ExerciseDraft())
+    logged_in.post(reverse("exercise_create"), {"step": "dictate", "text": LONG_TEXT})
+    response = logged_in.post(
+        reverse("exercise_create"),
+        {"step": "save", "title": PREFILLED_TITLE, "original_text": LONG_TEXT},
+    )
+    assert response.status_code == 302
+    exercise = Exercise.objects.get()
+    assert exercise.title == PREFILLED_TITLE
+    assert exercise.original_text == LONG_TEXT
+
+
+@pytest.mark.django_db
+def test_successful_draft_has_no_autofill_note(logged_in, monkeypatch):
+    _mock_draft(monkeypatch, DRAFT)
+    response = logged_in.post(reverse("exercise_create"), {"step": "dictate", "text": "nějaký diktát"})
+    assert AUTOFILL_NOTE not in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_detail_shows_original_text(logged_in, user):
+    exercise = Exercise.objects.create(user=user, title="Cvik", original_text="původní diktát")
+    content = logged_in.get(reverse("exercise_detail", args=[exercise.pk])).content.decode()
+    assert "Původní text" in content
+    assert "původní diktát" in content
+
+
+@pytest.mark.parametrize(
+    "text,expected",
+    [
+        ("Krátký popis", "Krátký popis"),
+        ("x" * 100, "x" * 60 + "…"),
+        (
+            "Pomalu otáčej hlavu do strany a drž ramena uvolněná po celou dobu cvičení",
+            "Pomalu otáčej hlavu do strany a drž ramena uvolněná po celou…",
+        ),
+        ("cvik " * 12 + "dlouhy", "cvik cvik cvik cvik cvik cvik cvik cvik cvik cvik cvik cvik…"),
+    ],
+)
+def test_prefill_title_cuts_at_word_boundary(text, expected):
+    assert exercises_views._prefill_title(text) == expected
+
+
 def test_every_area_and_position_has_an_svg():
     for key, _ in AREAS:
         assert finders.find(f"cviky/body/{key}.svg"), key

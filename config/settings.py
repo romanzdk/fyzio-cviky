@@ -95,7 +95,18 @@ OPENROUTER_MODEL = os.environ.get("OPENROUTER_MODEL", "")
 
 VAPID_PUBLIC_KEY = os.environ.get("VAPID_PUBLIC_KEY", "")
 VAPID_PRIVATE_KEY = os.environ.get("VAPID_PRIVATE_KEY", "")
-VAPID_SUBJECT = os.environ.get("VAPID_SUBJECT", "mailto:admin@localhost")
+
+
+def _vapid_subject(debug: bool) -> str:
+    subject = os.environ.get("VAPID_SUBJECT", "mailto:admin@localhost" if debug else "")
+    if not debug and (not subject or subject == "mailto:admin@localhost"):
+        raise RuntimeError("VAPID_SUBJECT must be set to a real address when DJANGO_DEBUG=0")
+    return subject
+
+
+VAPID_SUBJECT = _vapid_subject(DEBUG)
+
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 365
 
 LOGGING = {
     "version": 1,

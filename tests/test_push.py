@@ -4,6 +4,7 @@ import pytest
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
+from config import settings as config_settings
 from cviky.models import PushSubscription
 
 User = get_user_model()
@@ -152,6 +153,37 @@ def test_vapid_subject_default(settings):
     assert settings.VAPID_SUBJECT == "mailto:admin@localhost"
     assert hasattr(settings, "VAPID_PUBLIC_KEY")
     assert hasattr(settings, "VAPID_PRIVATE_KEY")
+
+
+def test_session_cookie_age_is_one_year(settings):
+    assert settings.SESSION_COOKIE_AGE == 60 * 60 * 24 * 365
+
+
+def test_service_worker_resolves_notification_url(client):
+    body = client.get("/sw.js").content.decode()
+    assert "new URL(url, self.location.origin).href" in body
+
+
+def test_vapid_subject_default_only_with_debug(monkeypatch):
+    monkeypatch.delenv("VAPID_SUBJECT", raising=False)
+    assert config_settings._vapid_subject(True) == "mailto:admin@localhost"
+
+
+def test_vapid_subject_required_in_production(monkeypatch):
+    monkeypatch.delenv("VAPID_SUBJECT", raising=False)
+    with pytest.raises(RuntimeError):
+        config_settings._vapid_subject(False)
+
+
+def test_vapid_subject_rejects_localhost_default_in_production(monkeypatch):
+    monkeypatch.setenv("VAPID_SUBJECT", "mailto:admin@localhost")
+    with pytest.raises(RuntimeError):
+        config_settings._vapid_subject(False)
+
+
+def test_vapid_subject_accepts_real_address_in_production(monkeypatch):
+    monkeypatch.setenv("VAPID_SUBJECT", "mailto:provoz@example.com")
+    assert config_settings._vapid_subject(False) == "mailto:provoz@example.com"
 
 
 @pytest.mark.django_db

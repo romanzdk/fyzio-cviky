@@ -85,6 +85,23 @@ def test_tags_are_normalized(monkeypatch):
 
 
 @SETTINGS
+def test_tags_string_is_split_on_commas(monkeypatch):
+    payload = dict(FULL, tags="krční páteř, šíje")
+    _patch_post(monkeypatch, _llm_response(payload))
+    assert structure_exercise("popis cviku").tags == ["krční páteř", "šíje"]
+
+
+@SETTINGS
+def test_request_uses_short_timeout(monkeypatch):
+    calls = _patch_post(monkeypatch, _llm_response(FULL))
+    structure_exercise("popis cviku")
+    timeout = calls["kwargs"]["timeout"]
+    assert isinstance(timeout, httpx.Timeout)
+    assert timeout.connect == 5.0
+    assert timeout.read == 20.0
+
+
+@SETTINGS
 def test_non_json_returns_empty_draft(monkeypatch):
     _patch_post(monkeypatch, FakeResponse({"choices": [{"message": {"content": "not json"}}]}))
     assert structure_exercise("popis cviku") == ExerciseDraft()

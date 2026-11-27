@@ -67,10 +67,22 @@ def index(request):
     )
 
 
+def _prefill_title(text: str) -> str:
+    normalized = " ".join(text.split())
+    if len(normalized) <= 60:
+        return normalized
+    if normalized[60].isspace():
+        return normalized[:60].rstrip() + "…"
+    prefix = normalized[:60]
+    if " " in prefix:
+        prefix = prefix[: prefix.rfind(" ")]
+    return prefix.rstrip() + "…"
+
+
 def _review(request, draft, original_text):
     form = ExerciseForm(
         initial={
-            "title": draft.title,
+            "title": draft.title or _prefill_title(original_text),
             "area": draft.area,
             "position": draft.position,
             "tags": draft.tags,
@@ -80,7 +92,11 @@ def _review(request, draft, original_text):
             "original_text": original_text,
         }
     )
-    return render(request, "cviky/exercise_create.html", {"step": "review", "form": form})
+    return render(
+        request,
+        "cviky/exercise_create.html",
+        {"step": "review", "form": form, "autofill_failed": not draft.title},
+    )
 
 
 @login_required

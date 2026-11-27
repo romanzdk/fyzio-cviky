@@ -61,3 +61,23 @@ def test_invite_stays_used_after_user_deleted(client):
     user.delete()
     response = client.get(reverse("register", args=[invite.token]))
     assert response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_logout_via_post_redirects_to_login(client):
+    user = User.objects.create_user(username="a", password="SilneHeslo123")
+    client.force_login(user)
+    response = client.post(reverse("logout"))
+    assert response.status_code == 302
+    assert response.url == reverse("login")
+    assert "_auth_user_id" not in client.session
+
+
+@pytest.mark.django_db
+def test_profile_has_logout_button(client):
+    user = User.objects.create_user(username="a", password="SilneHeslo123")
+    client.force_login(user)
+    content = client.get(reverse("profile")).content.decode()
+    assert "Odhlásit se" in content
+    assert 'action="/odhlaseni/"' in content
+    assert "csrfmiddlewaretoken" in content

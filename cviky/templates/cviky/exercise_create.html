@@ -16,11 +16,16 @@
 </form>
 {% else %}
 <h1>Zkontroluj a ulož</h1>
+{% if autofill_failed %}<p class="hint">Automatické zpracování se nepovedlo, doplň kartu ručně.</p>{% endif %}
 <form method="post">
   {% csrf_token %}
   <input type="hidden" name="step" value="save">
   {{ form.as_p }}
   <button type="submit">Uložit</button>
 </form>
+<div class="card">
+  <h2>Původní text</h2>
+  <p>{{ form.original_text.value }}</p>
+</div>
 {% endif %}
 {% endblock %}
