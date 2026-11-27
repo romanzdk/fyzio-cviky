@@ -49,9 +49,9 @@ def test_no_open_registration(client):
 
 @pytest.mark.django_db
 def test_anonymous_redirected_to_login(client):
-    response = client.get("/")
+    response = client.get("/cviky/")
     assert response.status_code == 302
-    assert response.url == "/prihlaseni/?next=/"
+    assert response.url == "/prihlaseni/?next=/cviky/"
 
 
 @pytest.mark.django_db

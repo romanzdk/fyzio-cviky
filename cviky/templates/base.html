@@ -15,7 +15,7 @@
 </head>
 {% with page=request.resolver_match.url_name %}
 <body class="{% if user.is_authenticated %}app{% else %}auth-page{% endif %}">
-<main{% if not user.is_authenticated %} class="auth"{% endif %}>
+<main{% if not user.is_authenticated %} class="{% block main_class %}auth{% endblock %}"{% endif %}>
 {% for message in messages %}<p class="toast" role="status">{{ message }}</p>{% endfor %}
 {% block content %}{% endblock %}
 </main>

@@ -339,3 +339,25 @@ fieldset.weekdays { border: 0; margin: 0; padding: 0; min-width: 0; }
   .tabbar a:not(.on):not(.side-dictate):hover { background: var(--bg); }
   .listing .item:hover { outline: 2px solid var(--primary-soft); }
 }
+
+.landing { max-width: 60rem; padding-top: calc(env(safe-area-inset-top) + 32px); }
+.hero { max-width: 36rem; margin: 0 auto 32px; text-align: center; }
+.hero .brand { justify-content: center; }
+.hero h1 { font-size: 34px; margin-bottom: 12px; }
+.lead { font-size: 18px; color: var(--muted); margin-bottom: 20px; }
+.hero-btn { width: auto; min-width: 220px; margin: 0 0 8px; }
+.steps-grid { display: grid; gap: 12px; margin-bottom: 32px; }
+.steps-grid .card { margin: 0; }
+.steps-grid p { margin: 6px 0 0; }
+.step-no { display: inline-grid; place-items: center; width: 32px; height: 32px; margin-bottom: 10px; border-radius: 50%; background: var(--primary-soft); color: var(--primary); font-weight: 700; }
+.preview { max-width: 26rem; margin: 0 auto 32px; }
+.preview .eyebrow { text-align: center; margin-bottom: 8px; }
+.preview .check-row .check { cursor: default; }
+.contact { max-width: 36rem; margin: 0 auto; padding: 24px 0 calc(24px + env(safe-area-inset-bottom)); text-align: center; color: var(--muted); border-top: 1px solid var(--line); }
+.contact a { font-weight: 600; }
+
+@media (min-width: 768px) {
+  .landing { padding-top: 72px; }
+  .hero h1 { font-size: 44px; }
+  .steps-grid { grid-template-columns: repeat(3, 1fr); }
+}

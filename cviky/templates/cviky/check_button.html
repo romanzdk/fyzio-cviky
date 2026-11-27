@@ -3,6 +3,6 @@
   <input type="hidden" name="exercise" value="{{ exercise.pk }}">
   {% if series %}<input type="hidden" name="series" value="{{ series.pk }}">{% endif %}
   <button type="submit" class="check{% if checked %} on{% endif %}" aria-pressed="{{ checked|yesno:'true,false' }}" aria-label="Hotovo: {{ exercise.title }}">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>
+    {% include "cviky/check_icon.html" %}
   </button>
 </form>

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Cviky – připomínky cviků z fyzioterapie{% endblock %}
+{% block main_class %}landing{% endblock %}
+
+{% block content %}
+<header class="hero">
+  <div class="brand"><img src="{% static 'cviky/icon-192.png' %}" alt="">Cviky</div>
+  <h1>Cviky z fyzioterapie, na které už nezapomeneš</h1>
+  <p class="lead">Po návštěvě fyzioterapeuta cvik jen nadiktuješ do telefonu. Appka z něj udělá přehlednou kartu, poskládá cviky do sérií a každý den ti připomene, co máš cvičit – i to, co jsi dlouho nedělal.</p>
+  <a class="btn hero-btn" href="{% url 'login' %}">Přihlásit se</a>
+  <p class="hint">Appka je zatím jen pro pozvané.</p>
+</header>
+
+<section class="steps-grid" aria-label="Jak to funguje">
+  <div class="card">
+    <span class="step-no">1</span>
+    <h2>Nadiktuj cvik</h2>
+    <p class="muted">Vlastními slovy, hned po fyzioterapii. Mikrofon v klávesnici stačí.</p>
+  </div>
+  <div class="card">
+    <span class="step-no">2</span>
+    <h2>Dostaneš kartu</h2>
+    <p class="muted">Název, oblast těla, poloha, postup krok za krokem a na co dát pozor.</p>
+  </div>
+  <div class="card">
+    <span class="step-no">3</span>
+    <h2>Appka připomene</h2>
+    <p class="muted">Série cviků v nastavené dny a čas. Odklikneš, co máš hotové.</p>
+  </div>
+</section>
+
+<section class="preview" aria-label="Ukázka obrazovky Dnes">
+  <p class="eyebrow">Ukázka</p>
+  <div class="card">
+    <div class="card-head"><h2>Ranní série</h2><span class="pill">2/3 ✓</span></div>
+    <div class="progress"><i style="width: 67%"></i></div>
+    <ul class="list">
+      <li class="check-row done"><span class="check on" aria-hidden="true">{% include "cviky/check_icon.html" %}</span><span class="title">Uvolnění krční páteře</span></li>
+      <li class="check-row done"><span class="check on" aria-hidden="true">{% include "cviky/check_icon.html" %}</span><span class="title">Kočka – kráva</span></li>
+      <li class="check-row"><span class="check" aria-hidden="true">{% include "cviky/check_icon.html" %}</span><span class="title">Mostík</span></li>
+    </ul>
+  </div>
+  <div class="card warn">
+    <h2>⚠ Dlouho jsi nedělal</h2>
+    <ul class="list">
+      <li class="check-row"><span class="check" aria-hidden="true">{% include "cviky/check_icon.html" %}</span><span class="title">Rotace v sedu</span><span class="meta">12 dní</span></li>
+    </ul>
+  </div>
+</section>
+
+<footer class="contact">
+  <p>Chceš pozvánku nebo máš nápad? Napiš mi na <a href="{{ mailto }}">{{ email }}</a> nebo se ozvi přes <a href="https://romanzdk.com" rel="noopener">romanzdk.com</a>.</p>
+</footer>
+{% endblock %}
