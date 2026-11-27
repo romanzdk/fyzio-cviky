@@ -84,6 +84,7 @@ def _send(series: Series, now: datetime) -> None:
                 vapid_private_key=settings.VAPID_PRIVATE_KEY,
                 vapid_claims={"sub": settings.VAPID_SUBJECT},
                 ttl=3600,
+                timeout=10,
             )
         except WebPushException as exc:
             status = exc.response.status_code if exc.response is not None else None

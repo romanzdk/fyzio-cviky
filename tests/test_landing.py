@@ -70,6 +70,17 @@ def test_landing_shows_sample_exercise_card_with_illustrations(client):
 
 @pytest.mark.django_db
 def test_pages_send_cookieless_visit_counts_to_goatcounter(client):
-    tag = '<script data-goatcounter="https://cviky.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>'
+    tag = 'data-goatcounter="https://cviky.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>'
     assert tag in client.get("/").content.decode()
     assert tag in client.get("/prihlaseni/").content.decode()
+
+
+@pytest.mark.django_db
+def test_pages_send_csp_and_inline_scripts_carry_its_nonce(client):
+    response = client.get("/")
+    csp = response["Content-Security-Policy"]
+    assert "default-src 'self'" in csp
+    assert "frame-ancestors 'none'" in csp
+    nonce = csp.split("'nonce-")[1].split("'")[0]
+    assert response.content.decode().count(f'nonce="{nonce}"') == 2
+    assert 'src="//' not in response.content.decode()

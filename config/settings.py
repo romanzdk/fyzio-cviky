@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 import dj_database_url
+from django.utils.csp import CSP
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -32,6 +33,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.middleware.csp.ContentSecurityPolicyMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -43,6 +45,7 @@ TEMPLATES = [
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
+                "django.template.context_processors.csp",
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
@@ -58,6 +61,7 @@ DATABASES = {
 }
 
 AUTH_USER_MODEL = "cviky.User"
+AUTHENTICATION_BACKENDS = ["cviky.backends.ThrottledModelBackend"]
 LOGIN_URL = "/prihlaseni/"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/prihlaseni/"
@@ -106,6 +110,20 @@ def _vapid_subject(debug: bool) -> str:
 VAPID_SUBJECT = _vapid_subject(DEBUG)
 
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 365
+
+GOATCOUNTER = "https://cviky.goatcounter.com"
+SECURE_CSP = {
+    "default-src": [CSP.SELF],
+    "script-src": [CSP.SELF, CSP.NONCE, "https://gc.zgo.at"],
+    # style="" attributes (progress bars, small layout tweaks)
+    "style-src": [CSP.SELF, CSP.UNSAFE_INLINE],
+    "img-src": [CSP.SELF, "data:", GOATCOUNTER],
+    "connect-src": [CSP.SELF, GOATCOUNTER],
+    "object-src": [CSP.NONE],
+    "base-uri": [CSP.SELF],
+    "form-action": [CSP.SELF],
+    "frame-ancestors": [CSP.NONE],
+}
 
 LOGGING = {
     "version": 1,
