@@ -265,7 +265,7 @@ def test_payload_contents(user, settings, monkeypatch):
     assert json.loads(call["data"]) == {
         "title": "Ranní série",
         "body": "4 cviky",
-        "url": "/",
+        "url": "/?app",
     }
 
 

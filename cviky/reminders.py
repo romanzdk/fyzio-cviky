@@ -72,7 +72,7 @@ def _neglected_count(series: Series, now: datetime) -> int:
 
 def _send(series: Series, now: datetime) -> None:
     title, body = reminder_text(series, _neglected_count(series, now))
-    payload = json.dumps({"title": title, "body": body, "url": "/"})
+    payload = json.dumps({"title": title, "body": body, "url": "/?app"})
     for subscription in PushSubscription.objects.filter(user=series.user):
         try:
             webpush(
