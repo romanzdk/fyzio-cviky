@@ -84,3 +84,19 @@ def test_pages_send_csp_and_inline_scripts_carry_its_nonce(client):
     nonce = csp.split("'nonce-")[1].split("'")[0]
     assert response.content.decode().count(f'nonce="{nonce}"') == 2
     assert 'src="//' not in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_privacy_page_is_public_and_linked(client, django_user_model):
+    page = html.unescape(client.get("/soukromi/").content.decode())
+    for fact in ("Roman Žydyk", "mailto:romanzdk@gmail.com", "Helsinkách", "OpenRouter", "GoatCounter", "uoou.gov.cz"):
+        assert fact in page
+    assert 'href="/soukromi/"' in client.get("/").content.decode()
+    client.force_login(django_user_model.objects.create_user(username="a", password="SilneHeslo123"))
+    assert 'href="/soukromi/"' in client.get("/profil/").content.decode()
+
+
+def test_favicon_redirects_to_static_icon(client):
+    response = client.get("/favicon.ico")
+    assert response.status_code == 301
+    assert response.url.endswith("cviky/icon-192.png")

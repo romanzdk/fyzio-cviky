@@ -15,14 +15,18 @@ def _entities(text: str) -> str:
     return mark_safe("".join(f"&#{ord(c)};" for c in text))
 
 
+def _contact():
+    return {"email": _entities(CONTACT_EMAIL), "mailto": _entities(f"mailto:{CONTACT_EMAIL}")}
+
+
 def _landing(request):
     if "app" in request.GET:
         return redirect("login")
-    return render(
-        request,
-        "cviky/landing.html",
-        {"email": _entities(CONTACT_EMAIL), "mailto": _entities(f"mailto:{CONTACT_EMAIL}")},
-    )
+    return render(request, "cviky/landing.html", _contact())
+
+
+def privacy(request):
+    return render(request, "cviky/privacy.html", _contact())
 
 
 def home(request):

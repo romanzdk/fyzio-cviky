@@ -91,9 +91,9 @@ def _send(series: Series, now: datetime) -> None:
             if status in (404, 410):
                 subscription.delete()
             else:
-                logger.warning("Push failed for %s: %s", subscription.endpoint, exc)
+                logger.warning("Push failed for subscription %s: %s", subscription.pk, exc)
         except Exception:
-            logger.exception("Push failed for %s", subscription.endpoint)
+            logger.exception("Push failed for subscription %s", subscription.pk)
 
 
 def send_due(now: datetime) -> int:

@@ -11,6 +11,10 @@
     <span class="text"><strong>Upozornění</strong><small>Přidání na plochu a zapnutí připomínek</small></span>
     <span class="chev" aria-hidden="true">›</span>
   </a>
+  <a class="item" href="{% url 'privacy' %}">
+    <span class="text"><strong>Ochrana osobních údajů</strong><small>Co ukládám, komu to posílám, jak smazat účet</small></span>
+    <span class="chev" aria-hidden="true">›</span>
+  </a>
   {% if user.is_staff %}
   <a class="item" href="{% url 'admin:index' %}">
     <span class="text"><strong>Správa</strong><small>Pozvánky a uživatelé</small></span>
