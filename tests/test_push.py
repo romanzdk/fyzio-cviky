@@ -193,3 +193,11 @@ def test_base_registers_service_worker_and_links(logged_in):
     assert 'name="theme-color" content="#2e7d32"' in content
     assert 'name="apple-mobile-web-app-capable" content="yes"' in content
     assert "Upozornění" in content
+
+
+@pytest.mark.django_db
+def test_install_page_sets_csrf_cookie_for_push_js(client, django_user_model):
+    user = django_user_model.objects.create_user(username="csrf", password="SilneHeslo123")
+    client.force_login(user)
+    response = client.get("/instalace/")
+    assert "csrftoken" in response.cookies

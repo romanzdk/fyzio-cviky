@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_POST
 
 from cviky.models import PushSubscription
@@ -26,6 +27,7 @@ def manifest(request):
 
 
 @login_required
+@ensure_csrf_cookie
 def install(request):
     return render(request, "cviky/install.html", {"vapid_public_key": settings.VAPID_PUBLIC_KEY})
 
