@@ -1,7 +1,6 @@
 import pytest
 from django.contrib.auth import get_user_model
 from django.contrib.staticfiles import finders
-from django.template.loader import render_to_string
 from django.urls import reverse
 
 from cviky.choices import AREAS, POSITIONS
@@ -253,14 +252,16 @@ def test_every_area_and_position_has_an_svg():
         assert finders.find(f"cviky/poloha/{key}.svg"), key
 
 
-def test_illustration_renders_for_every_area_and_position():
-    for key, label in AREAS:
-        html = render_to_string("cviky/ilustrace.html", {"area": key, "position": ""})
-        assert f"cviky/body/{key}.svg" in html
-        assert f'alt="{label}"' in html
-    for key, label in POSITIONS:
-        html = render_to_string("cviky/ilustrace.html", {"area": "", "position": key})
-        assert f"cviky/poloha/{key}.svg" in html
-        assert f'alt="{label}"' in html
-    empty = render_to_string("cviky/ilustrace.html", {"area": "", "position": ""})
-    assert "<img" not in empty
+@pytest.mark.django_db
+def test_detail_shows_illustrations_for_every_area_and_position(client, django_user_model):
+    user = django_user_model.objects.create_user(username="ilu", password="SilneHeslo123")
+    client.force_login(user)
+    for (area, area_label), (position, position_label) in zip(AREAS, POSITIONS * 2, strict=False):
+        exercise = Exercise.objects.create(user=user, title="Cvik", area=area, position=position)
+        html = client.get(reverse("exercise_detail", args=[exercise.pk])).content.decode()
+        assert f"cviky/body/{area}.svg" in html
+        assert f'alt="{area_label}"' in html
+        assert f"cviky/poloha/{position}.svg" in html
+        assert f'alt="{position_label}"' in html
+    bare = Exercise.objects.create(user=user, title="Bez ikon")
+    assert "<figure>" not in client.get(reverse("exercise_detail", args=[bare.pk])).content.decode()

@@ -4,10 +4,13 @@
 
 {% block content %}
 <h1>Smazat cvik</h1>
-<p>Opravdu smazat cvik „{{ exercise.title }}“?</p>
+<div class="card">
+  <p>Opravdu smazat cvik „{{ exercise.title }}“?</p>
+  <p class="hint">Zmizí i ze všech sérií a s ním i historie odkliknutí.</p>
+</div>
 <form method="post">
   {% csrf_token %}
-  <button type="submit">Smazat</button>
+  <button type="submit" class="btn danger">Smazat</button>
 </form>
-<p><a href="{% url 'exercise_detail' exercise.pk %}">Zrušit</a></p>
+<a class="btn ghost" href="{% url 'exercise_detail' exercise.pk %}">Zrušit</a>
 {% endblock %}

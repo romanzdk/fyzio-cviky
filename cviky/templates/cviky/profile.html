@@ -3,14 +3,31 @@
 {% block title %}Profil{% endblock %}
 
 {% block content %}
+<p class="eyebrow">{{ user.username }}</p>
 <h1>Profil</h1>
+
+<div class="card flush">
+  <a class="item" href="{% url 'install' %}">
+    <span class="text"><strong>Upozornění</strong><small>Přidání na plochu a zapnutí připomínek</small></span>
+    <span class="chev" aria-hidden="true">›</span>
+  </a>
+  {% if user.is_staff %}
+  <a class="item" href="{% url 'admin:index' %}">
+    <span class="text"><strong>Správa</strong><small>Pozvánky a uživatelé</small></span>
+    <span class="chev" aria-hidden="true">›</span>
+  </a>
+  {% endif %}
+</div>
+
+<h3>Nastavení</h3>
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
   <button type="submit">Uložit</button>
 </form>
+
 <form method="post" action="{% url 'logout' %}">
   {% csrf_token %}
-  <button type="submit">Odhlásit se</button>
+  <button type="submit" class="btn ghost">Odhlásit se</button>
 </form>
 {% endblock %}

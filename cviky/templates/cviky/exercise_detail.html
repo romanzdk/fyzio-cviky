@@ -1,23 +1,50 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}{{ exercise.title }}{% endblock %}
 
 {% block content %}
+<p class="eyebrow"><a href="{% url 'exercise_list' %}">‹ Cviky</a></p>
 <h1>{{ exercise.title }}</h1>
-{% include "cviky/ilustrace.html" with area=exercise.area position=exercise.position %}
-{% if exercise.tags %}<p>{{ exercise.tags|join:", " }}</p>{% endif %}
-{% if exercise.area %}<p>Oblast: {{ exercise.get_area_display }}</p>{% endif %}
-{% if exercise.position %}<p>Poloha: {{ exercise.get_position_display }}</p>{% endif %}
-{% if exercise.reps %}<p>Opakování: {{ exercise.reps }}</p>{% endif %}
-{% if exercise.steps %}<h2>Postup</h2><p>{{ exercise.steps|linebreaksbr }}</p>{% endif %}
-{% if exercise.cautions %}<h2>Opatření</h2><p>{{ exercise.cautions|linebreaksbr }}</p>{% endif %}
-{% if exercise.original_text %}<h2>Původní text</h2><p>{{ exercise.original_text|linebreaksbr }}</p>{% endif %}
 
-<p>
-  <a href="{% url 'exercise_create' %}">Přidat další cvik</a>
-</p>
-<p>
-  <a href="{% url 'exercise_edit' exercise.pk %}">Upravit</a>
-  <a href="{% url 'exercise_delete' exercise.pk %}">Smazat</a>
-</p>
+{% if exercise.area or exercise.position %}
+<div class="figures">
+  {% if exercise.area %}<figure><img src="{% static 'cviky/body/'|add:exercise.area|add:'.svg' %}" alt="{{ exercise.get_area_display }}"><figcaption>{{ exercise.get_area_display }}</figcaption></figure>{% endif %}
+  {% if exercise.position %}<figure><img src="{% static 'cviky/poloha/'|add:exercise.position|add:'.svg' %}" alt="{{ exercise.get_position_display }}"><figcaption>{{ exercise.get_position_display }}</figcaption></figure>{% endif %}
+</div>
+{% endif %}
+
+{% if exercise.reps or exercise.tags %}
+<div class="chips">
+  {% if exercise.reps %}<span class="pill">{{ exercise.reps }}</span>{% endif %}
+  {% for tag in exercise.tags %}<span class="chip">{{ tag }}</span>{% endfor %}
+</div>
+{% endif %}
+
+{% if exercise.steps %}
+<section class="card">
+  <h2>Postup</h2>
+  <ol class="steps">{% for line in exercise.steps.splitlines %}{% if line.strip %}<li>{{ line }}</li>{% endif %}{% endfor %}</ol>
+</section>
+{% endif %}
+
+{% if exercise.cautions %}
+<section class="card warn">
+  <h2>Na co dát pozor</h2>
+  <p class="quote">{{ exercise.cautions }}</p>
+</section>
+{% endif %}
+
+{% if exercise.original_text %}
+<section class="card">
+  <h2>Původní text</h2>
+  <p class="quote">{{ exercise.original_text }}</p>
+</section>
+{% endif %}
+
+<div class="btn-row">
+  <a class="btn secondary" href="{% url 'exercise_edit' exercise.pk %}">Upravit</a>
+  <a class="btn danger" href="{% url 'exercise_delete' exercise.pk %}">Smazat</a>
+</div>
+<a class="btn ghost" href="{% url 'exercise_create' %}">Přidat další cvik</a>
 {% endblock %}

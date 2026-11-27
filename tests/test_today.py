@@ -114,7 +114,7 @@ def test_page_shows_neglected_section_only_when_non_empty(logged_in, user):
     )
     content = logged_in.get(reverse("home")).content.decode()
     assert "Dlouho jsi nedělal" in content
-    assert "(7 dní)" in content
+    assert "7 dní" in content
 
 
 @pytest.mark.django_db

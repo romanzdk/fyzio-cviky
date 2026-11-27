@@ -1,22 +1,10 @@
 from django import template
 
-from cviky.choices import AREAS, POSITIONS, WEEKDAYS
+from cviky.choices import WEEKDAYS
 
 register = template.Library()
 
-AREA_LABELS = dict(AREAS)
-POSITION_LABELS = dict(POSITIONS)
 WEEKDAY_LABELS = dict(WEEKDAYS)
-
-
-@register.filter
-def area_label(key):
-    return AREA_LABELS.get(key, key)
-
-
-@register.filter
-def position_label(key):
-    return POSITION_LABELS.get(key, key)
 
 
 @register.filter
@@ -36,3 +24,12 @@ def days_label(count):
     if 2 <= count <= 4:
         return f"{count} dny"
     return f"{count} dní"
+
+
+@register.filter
+def exercises_label(count):
+    if count == 1:
+        return f"{count} cvik"
+    if 2 <= count <= 4:
+        return f"{count} cviky"
+    return f"{count} cviků"

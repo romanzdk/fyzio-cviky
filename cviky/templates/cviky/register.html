@@ -1,8 +1,10 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Registrace{% endblock %}
 
 {% block content %}
+<div class="brand"><img src="{% static 'cviky/icon-192.png' %}" alt="">Cviky</div>
 <h1>Registrace</h1>
 <form method="post">
   {% csrf_token %}

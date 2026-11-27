@@ -1,8 +1,10 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Přihlášení{% endblock %}
 
 {% block content %}
+<div class="brand"><img src="{% static 'cviky/icon-192.png' %}" alt="">Cviky</div>
 <h1>Přihlášení</h1>
 <form method="post">
   {% csrf_token %}
