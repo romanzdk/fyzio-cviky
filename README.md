@@ -33,4 +33,6 @@ Nastav tyto proměnné prostředí:
 - `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` – klíče pro web push
 - `VAPID_SUBJECT=mailto:<skutečná adresa>` – povinné při `DJANGO_DEBUG=0` (výchozí `mailto:admin@localhost` je povolený jen v debugu)
 
-Pozvánku pro nového uživatele vytvoříš v administraci: `/sprava/` → Pozvánky → Přidat.
+Pozvánku pro nového uživatele vytvoříš v administraci: `/sprava/` → „Invites“ → „Přidat“.
+
+**Provoz, nasazení, zálohy, opravy a smazání bez AI: [docs/provoz.md](docs/provoz.md).**
