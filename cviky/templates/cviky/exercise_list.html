@@ -18,6 +18,11 @@
     <option value="">vše</option>
     {% for key, label in positions %}<option value="{{ key }}"{% if key == position %} selected{% endif %}>{{ label }}</option>{% endfor %}
   </select>
+  <label for="id_serie">Série</label>
+  <select id="id_serie" name="serie">
+    <option value="">vše</option>
+    {% for s in series %}<option value="{{ s.pk }}"{% if s.pk|stringformat:"s" == serie %} selected{% endif %}>{{ s.name }}</option>{% endfor %}
+  </select>
   <button type="submit">Hledat</button>
 </form>
 

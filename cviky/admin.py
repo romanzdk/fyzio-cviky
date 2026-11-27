@@ -3,7 +3,18 @@ from django.contrib.auth.admin import UserAdmin
 from django.urls import reverse
 from django.utils.html import format_html
 
-from cviky.models import Exercise, Invite, User
+from cviky.models import Exercise, Invite, Series, SeriesExercise, User
+
+
+class SeriesExerciseInline(admin.TabularInline):
+    model = SeriesExercise
+    extra = 0
+
+
+@admin.register(Series)
+class SeriesAdmin(admin.ModelAdmin):
+    list_display = ("name", "user", "remind_at")
+    inlines = [SeriesExerciseInline]
 
 
 @admin.register(Exercise)

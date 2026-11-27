@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from cviky.choices import AREAS, POSITIONS
 from cviky.forms import ExerciseForm
 from cviky.llm import structure_exercise
-from cviky.models import Exercise
+from cviky.models import Exercise, Series
 
 MAX_TEXT_LENGTH = 5000
 
@@ -14,12 +14,14 @@ EMPTY_TEXT_ERROR = "Zadej popis cviku."
 TOO_LONG_ERROR = f"Popis je příliš dlouhý (max {MAX_TEXT_LENGTH} znaků)."
 
 
-def search_exercises(user, q: str, area: str = "", position: str = ""):
+def search_exercises(user, q: str, area: str = "", position: str = "", series_id: int | None = None):
     queryset = Exercise.objects.filter(user=user)
     if area.strip():
         queryset = queryset.filter(area=area.strip())
     if position.strip():
         queryset = queryset.filter(position=position.strip())
+    if series_id is not None:
+        queryset = queryset.filter(series_items__series_id=series_id)
 
     words = q.split()
     if words:
@@ -43,14 +45,22 @@ def index(request):
     q = request.GET.get("q", "")
     area = request.GET.get("area", "")
     position = request.GET.get("position", "")
+    serie = request.GET.get("serie", "")
+    series_id = None
+    if serie.isdigit():
+        series_id = (
+            Series.objects.filter(user=request.user, pk=int(serie)).values_list("pk", flat=True).first()
+        )
     return render(
         request,
         "cviky/exercise_list.html",
         {
-            "exercises": search_exercises(request.user, q, area, position),
+            "exercises": search_exercises(request.user, q, area, position, series_id),
             "q": q,
             "area": area,
             "position": position,
+            "serie": serie,
+            "series": Series.objects.filter(user=request.user),
             "areas": AREAS,
             "positions": POSITIONS,
         },

@@ -18,3 +18,13 @@ POSITIONS = [
     ("leh_bok", "leh na boku"),
     ("ctyri", "na čtyřech"),
 ]
+
+WEEKDAYS = [
+    (0, "Po"),
+    (1, "Út"),
+    (2, "St"),
+    (3, "Čt"),
+    (4, "Pá"),
+    (5, "So"),
+    (6, "Ne"),
+]

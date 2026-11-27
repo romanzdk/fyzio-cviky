@@ -30,6 +30,35 @@ class Exercise(models.Model):
         return self.title
 
 
+class Series(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="series")
+    name = models.CharField(max_length=200)
+    weekdays = ArrayField(models.PositiveSmallIntegerField(), default=list, blank=True)
+    remind_at = models.TimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
+class SeriesExercise(models.Model):
+    series = models.ForeignKey(Series, on_delete=models.CASCADE, related_name="items")
+    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, related_name="series_items")
+    order = models.PositiveSmallIntegerField(default=0)
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["order"]
+        constraints = [
+            models.UniqueConstraint(fields=["series", "exercise"], name="unique_series_exercise")
+        ]
+
+    def __str__(self):
+        return f"{self.series} – {self.exercise}"
+
+
 class Invite(models.Model):
     token = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)

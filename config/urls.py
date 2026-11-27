@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path
 
-from cviky.views import auth, exercises, health
+from cviky.views import auth, exercises, health, series
 
 urlpatterns = [
     path("sprava/", admin.site.urls),
@@ -16,4 +16,8 @@ urlpatterns = [
     path("cviky/<int:pk>/", exercises.detail, name="exercise_detail"),
     path("cviky/<int:pk>/upravit/", exercises.edit, name="exercise_edit"),
     path("cviky/<int:pk>/smazat/", exercises.delete, name="exercise_delete"),
+    path("serie/", series.index, name="series_list"),
+    path("serie/nova/", series.create, name="series_create"),
+    path("serie/<int:pk>/upravit/", series.edit, name="series_edit"),
+    path("serie/<int:pk>/smazat/", series.delete, name="series_delete"),
 ]

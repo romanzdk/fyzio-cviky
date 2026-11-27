@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}{% if series %}Upravit sérii{% else %}Nová série{% endif %}{% endblock %}
+
+{% block content %}
+<h1>{% if series %}Upravit sérii{% else %}Nová série{% endif %}</h1>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  <label for="{{ form.name.id_for_label }}">Název</label>
+  {{ form.name.errors }}
+  {{ form.name }}
+
+  <label>Dny</label>
+  {{ form.weekdays.errors }}
+  {{ form.weekdays }}
+
+  <label for="{{ form.remind_at.id_for_label }}">Připomenout v</label>
+  {{ form.remind_at.errors }}
+  {{ form.remind_at }}
+
+  <h2>Cviky</h2>
+  {% for row in rows %}
+  <div class="card">
+    <label>
+      <input type="checkbox" name="exercises" value="{{ row.exercise.pk }}"{% if row.checked %} checked{% endif %}>
+      {{ row.exercise.title }}
+    </label>
+    <label for="id_order_{{ row.exercise.pk }}">Pořadí</label>
+    <input id="id_order_{{ row.exercise.pk }}" type="number" name="order_{{ row.exercise.pk }}" value="{{ row.order }}" min="0">
+  </div>
+  {% empty %}
+  <p>Zatím žádné cviky.</p>
+  {% endfor %}
+
+  <button type="submit">Uložit</button>
+</form>
+
+<p><a href="{% url 'series_list' %}">Zpět na série</a></p>
+{% endblock %}

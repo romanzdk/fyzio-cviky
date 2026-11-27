@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load cviky_extras %}
+
+{% block title %}Série{% endblock %}
+
+{% block content %}
+<h1>Série</h1>
+
+{% for s in series %}
+<div class="card">
+  <h2>{{ s.name }}</h2>
+  <p>Dny: {{ s.weekdays|weekday_labels }}</p>
+  {% if s.remind_at %}<p>Čas: {{ s.remind_at|time:"H:i" }}</p>{% endif %}
+  <p>Počet cviků: {{ s.exercise_count }}</p>
+  <p>
+    <a href="{% url 'series_edit' s.pk %}">Upravit</a>
+    <a href="{% url 'series_delete' s.pk %}">Smazat</a>
+  </p>
+</div>
+{% empty %}
+<p>Zatím žádné série.</p>
+{% endfor %}
+
+<p><a href="{% url 'series_create' %}">Nová série</a></p>
+{% endblock %}
