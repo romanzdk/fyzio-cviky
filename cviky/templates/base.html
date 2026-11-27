@@ -4,7 +4,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#2e7d32">
+<meta name="theme-color" content="#2e7d32" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1512" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="manifest" href="{% url 'manifest' %}">
@@ -24,16 +25,16 @@
   Nadiktovat cvik
 </a>
 {% endif %}
-<nav class="tabbar">
+<nav class="tabbar" aria-label="Hlavní navigace">
   <a href="{% url 'home' %}"{% if page == "home" %} class="on" aria-current="page"{% endif %}>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18M9 15l2 2 4-4"/></svg>
     Dnes
   </a>
-  <a href="{% url 'exercise_list' %}"{% if page|slice:":8" == "exercise" %} class="on" aria-current="page"{% endif %}>
+  <a href="{% url 'exercise_list' %}"{% if page == "exercise_list" or page == "exercise_create" or page == "exercise_detail" or page == "exercise_edit" or page == "exercise_delete" %} class="on" aria-current="page"{% endif %}>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4.5" r="2"/><path d="M5 9l7-1 7 1M12 8v6l-3 7M12 14l3 7"/></svg>
     Cviky
   </a>
-  <a href="{% url 'series_list' %}"{% if page|slice:":6" == "series" %} class="on" aria-current="page"{% endif %}>
+  <a href="{% url 'series_list' %}"{% if page == "series_list" or page == "series_create" or page == "series_edit" or page == "series_delete" %} class="on" aria-current="page"{% endif %}>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></svg>
     Série
   </a>

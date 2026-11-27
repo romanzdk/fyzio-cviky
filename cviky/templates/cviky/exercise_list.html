@@ -13,15 +13,15 @@
   </div>
   <div class="filters">
     <select id="id_area" name="area" aria-label="Oblast" onchange="this.form.submit()">
-      <option value="">Oblast</option>
+      <option value="">Oblast: vše</option>
       {% for key, label in areas %}<option value="{{ key }}"{% if key == area %} selected{% endif %}>{{ label }}</option>{% endfor %}
     </select>
     <select id="id_position" name="position" aria-label="Poloha" onchange="this.form.submit()">
-      <option value="">Poloha</option>
+      <option value="">Poloha: vše</option>
       {% for key, label in positions %}<option value="{{ key }}"{% if key == position %} selected{% endif %}>{{ label }}</option>{% endfor %}
     </select>
     <select id="id_serie" name="serie" aria-label="Série" onchange="this.form.submit()">
-      <option value="">Série</option>
+      <option value="">Série: vše</option>
       {% for s in series %}<option value="{{ s.pk }}"{% if s.pk|stringformat:"s" == serie %} selected{% endif %}>{{ s.name }}</option>{% endfor %}
     </select>
   </div>

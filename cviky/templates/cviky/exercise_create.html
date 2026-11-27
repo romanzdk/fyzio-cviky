@@ -6,7 +6,7 @@
 {% if step == "dictate" %}
 <p class="eyebrow"><a href="{% url 'exercise_list' %}">‹ Zpět</a></p>
 <h1>Nový cvik</h1>
-{% if error %}<p class="errors">{{ error }}</p>{% endif %}
+{% if error %}<p class="errors" role="alert">{{ error }}</p>{% endif %}
 <form method="post">
   {% csrf_token %}
   <input type="hidden" name="step" value="dictate">
@@ -18,15 +18,15 @@
 {% else %}
 <h1>Zkontroluj a ulož</h1>
 {% if autofill_failed %}<div class="card warn"><p>Automatické zpracování se nepovedlo, doplň kartu ručně.</p></div>{% endif %}
-<section class="card">
-  <h2>Původní text</h2>
-  <p class="quote">{{ form.original_text.value }}</p>
-</section>
 <form method="post">
   {% csrf_token %}
   <input type="hidden" name="step" value="save">
   {{ form.as_p }}
   <button type="submit">Uložit</button>
 </form>
+<section class="card" style="margin-top: 16px">
+  <h2>Původní text</h2>
+  <p class="quote">{{ form.original_text.value }}</p>
+</section>
 {% endif %}
 {% endblock %}

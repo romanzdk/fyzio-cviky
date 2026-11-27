@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static cviky_extras %}
 
 {% block title %}{{ exercise.title }}{% endblock %}
 
@@ -24,7 +24,7 @@
 {% if exercise.steps %}
 <section class="card">
   <h2>Postup</h2>
-  <ol class="steps">{% for line in exercise.steps.splitlines %}{% if line.strip %}<li>{{ line }}</li>{% endif %}{% endfor %}</ol>
+  <ol class="steps">{% for line in exercise.steps|step_lines %}<li>{{ line }}</li>{% endfor %}</ol>
 </section>
 {% endif %}
 

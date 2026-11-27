@@ -13,9 +13,11 @@
   {{ form.name.errors }}
   {{ form.name }}
 
-  <label>Dny</label>
-  {{ form.weekdays.errors }}
-  <div class="weekdays">{{ form.weekdays }}</div>
+  <fieldset class="weekdays">
+    <legend>Dny</legend>
+    {{ form.weekdays.errors }}
+    {{ form.weekdays }}
+  </fieldset>
 
   <label for="{{ form.remind_at.id_for_label }}">Připomenout v</label>
   {{ form.remind_at.errors }}
@@ -30,7 +32,7 @@
         <input type="checkbox" name="exercises" value="{{ row.exercise.pk }}"{% if row.checked %} checked{% endif %}>
         {{ row.exercise.title }}
       </label>
-      <input id="id_order_{{ row.exercise.pk }}" type="number" name="order_{{ row.exercise.pk }}" value="{{ row.order }}" min="0" aria-label="Pořadí" placeholder="#">
+      <input id="id_order_{{ row.exercise.pk }}" type="number" name="order_{{ row.exercise.pk }}" value="{{ row.order }}" min="0" aria-label="Pořadí: {{ row.exercise.title }}" placeholder="#">
     </div>
     {% endfor %}
   </div>
