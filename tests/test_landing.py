@@ -57,3 +57,10 @@ def test_pages_ask_not_to_be_indexed(client):
 @pytest.mark.django_db
 def test_login_page_links_back_to_landing(client):
     assert 'href="/"' in client.get("/prihlaseni/").content.decode()
+
+
+@pytest.mark.django_db
+def test_landing_shows_sample_exercise_card_with_illustrations(client):
+    page = client.get("/").content.decode()
+    assert "cviky/body/krk" in page and "cviky/poloha/sed" in page
+    assert "Ukázka karty cviku" in page
