@@ -66,3 +66,10 @@ def test_landing_shows_sample_exercise_card_with_illustrations(client):
     assert "Ukázka karty cviku" in page
     assert "Opakování: 10× na každou stranu" in page
     assert page.count("<li>Sedni si") == 1
+
+
+@pytest.mark.django_db
+def test_pages_send_cookieless_visit_counts_to_goatcounter(client):
+    tag = '<script data-goatcounter="https://cviky.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>'
+    assert tag in client.get("/").content.decode()
+    assert tag in client.get("/prihlaseni/").content.decode()
