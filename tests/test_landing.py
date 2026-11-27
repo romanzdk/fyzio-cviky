@@ -100,3 +100,12 @@ def test_favicon_redirects_to_static_icon(client):
     response = client.get("/favicon.ico")
     assert response.status_code == 301
     assert response.url.endswith("cviky/icon-192.png")
+
+
+@pytest.mark.django_db
+def test_missing_page_is_czech_and_links_home(client):
+    response = client.get("/neexistuje/")
+    assert response.status_code == 404
+    html = response.content.decode()
+    assert "Stránka nenalezena" in html
+    assert 'href="/"' in html

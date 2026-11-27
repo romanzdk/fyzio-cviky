@@ -15,6 +15,13 @@
   <p class="hint">Klepni na mikrofon na klávesnici a diktuj</p>
   <button type="submit">Zpracovat</button>
 </form>
+<script nonce="{{ csp_nonce }}">
+  document.querySelector('form').addEventListener('submit', function (event) {
+    var button = event.target.querySelector('button');
+    button.disabled = true;
+    button.textContent = 'Zpracovávám…';
+  });
+</script>
 {% else %}
 <h1>Zkontroluj a ulož</h1>
 {% if autofill_failed %}<div class="card warn"><p>Automatické zpracování se nepovedlo, doplň kartu ručně.</p></div>{% endif %}
