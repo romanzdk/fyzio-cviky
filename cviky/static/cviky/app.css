@@ -371,6 +371,8 @@ fieldset.weekdays { border: 0; margin: 0; padding: 0; min-width: 0; }
 }
 
 @media (prefers-color-scheme: dark) {
-  .figures figure, .preview .figures figure, .thumb { background: #dfe7e2; }
-  .figures figcaption { color: #3f4b44; }
+  :root { --tile: #dfe7e2; --tile-text: #3f4b44; }
+  .figures figure, .preview .figures figure, .thumb:has(img) { background: var(--tile); }
+  .figures figcaption { color: var(--tile-text); }
 }
+.preview .pill { white-space: normal; }

@@ -64,3 +64,5 @@ def test_landing_shows_sample_exercise_card_with_illustrations(client):
     page = client.get("/").content.decode()
     assert "cviky/body/krk" in page and "cviky/poloha/sed" in page
     assert "Ukázka karty cviku" in page
+    assert "Opakování: 10× na každou stranu" in page
+    assert page.count("<li>Sedni si") == 1
