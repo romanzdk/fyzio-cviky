@@ -1,6 +1,7 @@
 import pytest
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from django.utils import timezone
 
 from cviky.models import Invite
 
@@ -25,7 +26,7 @@ def test_register_with_valid_invite_creates_user_and_marks_used(client):
 @pytest.mark.django_db
 def test_used_invite_returns_404(client):
     user = User.objects.create_user(username="a", password="SilneHeslo123")
-    invite = Invite.objects.create(used_by=user)
+    invite = Invite.objects.create(used_by=user, used_at=timezone.now())
     response = client.get(reverse("register", args=[invite.token]))
     assert response.status_code == 404
 
@@ -51,3 +52,12 @@ def test_anonymous_redirected_to_login(client):
     response = client.get("/")
     assert response.status_code == 302
     assert response.url == "/prihlaseni/?next=/"
+
+
+@pytest.mark.django_db
+def test_invite_stays_used_after_user_deleted(client):
+    user = User.objects.create_user(username="a", password="SilneHeslo123")
+    invite = Invite.objects.create(used_by=user, used_at=timezone.now())
+    user.delete()
+    response = client.get(reverse("register", args=[invite.token]))
+    assert response.status_code == 404
