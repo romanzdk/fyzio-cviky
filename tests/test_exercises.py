@@ -305,3 +305,9 @@ def test_llm_calls_capped_per_user_per_day(logged_in, monkeypatch):
     assert len(calls) == 2
     assert "Automatické zpracování se nepovedlo" in response.content.decode()
     cache.clear()
+
+
+@pytest.mark.django_db
+def test_empty_list_offers_first_exercise(logged_in):
+    assert "Nadiktovat první cvik" in logged_in.get(reverse("exercise_list")).content.decode()
+    assert "Přidat další cvik" in logged_in.get(reverse("exercise_list") + "?q=nic").content.decode()

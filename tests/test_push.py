@@ -235,15 +235,15 @@ def test_install_shows_czech_steps(logged_in):
 def test_install_without_vapid_key_shows_message(logged_in, settings):
     settings.VAPID_PUBLIC_KEY = ""
     content = logged_in.get(reverse("install")).content.decode()
-    assert "Upozornění nejsou na serveru nastavená." in content
-    assert "Zapnout upozornění" not in content
+    assert "Připomínky nejsou na serveru nastavené." in content
+    assert "Zapnout připomínky" not in content
 
 
 @pytest.mark.django_db
 def test_install_with_vapid_key_shows_button(logged_in, settings):
     settings.VAPID_PUBLIC_KEY = "BPpublic-key"
     content = logged_in.get(reverse("install")).content.decode()
-    assert "Zapnout upozornění" in content
+    assert "Zapnout připomínky" in content
     assert 'data-vapid-public-key="BPpublic-key"' in content
     assert "push.js" in content
 
@@ -262,7 +262,7 @@ def test_base_registers_service_worker_and_links(logged_in):
 def test_profile_links_to_notification_setup(logged_in):
     content = logged_in.get(reverse("profile")).content.decode()
     assert 'href="/instalace/"' in content
-    assert "Upozornění" in content
+    assert "Připomínky" in content
 
 
 @pytest.mark.django_db

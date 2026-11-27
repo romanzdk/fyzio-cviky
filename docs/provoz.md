@@ -259,7 +259,7 @@ Oba řádky přepiš v `.env` a dej `docker compose up -d`. Staré odběry pak n
 docker compose exec -T web python manage.py shell -c "from cviky.models import PushSubscription; print(PushSubscription.objects.all().delete())"
 ```
 
-Potom každý na iPhonu otevře appku z plochy → Profil → Upozornění → „Zapnout upozornění“.
+Potom každý na iPhonu otevře appku z plochy → Profil → Připomínky → „Zapnout připomínky“.
 
 ### Změna hesla databáze
 
@@ -339,7 +339,7 @@ curl -sI https://cviky.romanzdk.com/healthz
 | Certifikát / HTTPS nejde | DNS neukazuje na server, nebo je záznam v Cloudflare „Proxied“ | `dig +short cviky.romanzdk.com` musí vrátit `<IP serveru>`. V Cloudflare přepni na „DNS only“. Logy: `cd /opt/esk && docker compose logs --tail 100 caddy`. |
 | Po nasazení **Vozopisu** přestala appka jít | někdo z Vozopis repa smazal blok `cviky.romanzdk.com` nebo síť `cviky` | kap. 8 |
 | Diktát vytvoří **prázdnou kartu** s poznámkou „Automatické zpracování se nepovedlo“ | LLM selhalo (klíč, kredit, model, výpadek) | `docker compose logs web \| grep -i openrouter`; kredit na openrouter.ai; zkus klíč: `curl -s -H "Authorization: Bearer KLIC" https://openrouter.ai/api/v1/key`. Karta jde mezitím vyplnit ručně. |
-| **Upozornění nechodí** | appka není přidaná na plochu, upozornění nejsou zapnutá, série nemá dny/čas, nebo Apple odmítá | 1) na iPhonu otevřít appku **z plochy** → Profil → Upozornění → Zapnout. 2) v administraci „Push subscriptions“ musí být řádek pro uživatele. 3) série musí mít vybraný den a čas. 4) `docker compose logs scheduler` hledej `Push failed`. 403 = špatné VAPID klíče nebo `VAPID_SUBJECT`. |
+| **Upozornění nechodí** | appka není přidaná na plochu, upozornění nejsou zapnutá, série nemá dny/čas, nebo Apple odmítá | 1) na iPhonu otevřít appku **z plochy** → Profil → Připomínky → Zapnout. 2) v administraci „Push subscriptions“ musí být řádek pro uživatele. 3) série musí mít vybraný den a čas. 4) `docker compose logs scheduler` hledej `Push failed`. 403 = špatné VAPID klíče nebo `VAPID_SUBJECT`. |
 | Upozornění přišlo dvakrát / nepřišlo dnes | — | každá série max. 1× denně (tabulka `cviky_remindersent`). Pro test smaž dnešní řádek: `docker compose exec -T web python manage.py shell -c "from cviky.models import ReminderSent; ReminderSent.objects.all().delete()"` |
 | Plánovač v logu `send_reminders failed` | chyba v kódu nebo DB | vypíše se traceback nad tím řádkem; smyčka běží dál a zkusí to za minutu |
 | Dochází paměť (server má 1 GB) | moc procesů | `free -m`, `docker stats --no-stream`. Limity jsou v `deploy/docker-compose.yml` (`mem_limit`). Snížit počet workerů: do `.env` přidat `WEB_CONCURRENCY=1`. |
@@ -457,7 +457,7 @@ Nevratné. Nejdřív záloha (kap. 6), pokud data chceš.
 | `cviky/models.py` | databázové tabulky (viz níže) |
 | `cviky/choices.py` | pevné seznamy oblastí, poloh a dnů |
 | `cviky/llm.py` | volání OpenRouteru: text → `ExerciseDraft`; při chybě vrátí prázdný návrh, nikdy nespadne |
-| `cviky/today.py` | výpočty pro „Dnes“: dnešní série, co je odkliknuté, „Dlouho jsi nedělal“ |
+| `cviky/today.py` | výpočty pro „Dnes“: dnešní série, co je odkliknuté, „Dlouho nedělané“ |
 | `cviky/reminders.py` | kdy poslat připomínku, text upozornění, odeslání přes Web Push |
 | `cviky/management/commands/send_reminders.py` | příkaz, který spouští plánovač |
 | `cviky/views/*.py` | stránky: `auth` (registrace), `exercises`, `series`, `today`, `profile`, `push` (PWA a odběr), `health` |
@@ -466,7 +466,7 @@ Nevratné. Nejdřív záloha (kap. 6), pokud data chceš.
 | `cviky/static/cviky/icon.svg` | ikona appky; PNG verze (`icon-192.png`, `icon-512.png`, `apple-touch-icon.png`) jsou z ní vykreslené |
 | `cviky/static/sw.js` | service worker: zobrazí upozornění a po klepnutí otevře appku |
 | `cviky/static/manifest.webmanifest` | údaje pro „Přidat na plochu“ |
-| `cviky/static/cviky/push.js` | tlačítko „Zapnout upozornění“ |
+| `cviky/static/cviky/push.js` | tlačítko „Zapnout připomínky“ |
 | `cviky/static/cviky/body/*.svg`, `poloha/*.svg` | ikonky oblasti těla a polohy |
 | `tests/` | testy (pytest) |
 
@@ -498,7 +498,7 @@ Plánovač každých 60 s spustí `send_reminders`. Série dostane připomínku,
 
 Text: název série a „4 cviky + 2 dlouho nedělané“. Odběry, které Apple hlásí jako zaniklé (404/410), se smažou.
 
-### „Dlouho jsi nedělal“
+### „Dlouho nedělané“
 
 Cvik, který je v nějaké sérii a nebyl odkliknutý aspoň `neglect_days` dní. Když nebyl odkliknutý nikdy, počítá se od přidání do série.
 

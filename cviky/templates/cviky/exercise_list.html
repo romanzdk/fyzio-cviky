@@ -48,8 +48,13 @@
 </div>
 {% else %}
 <div class="card empty">
-  <p>{% if q or area or position or serie %}Nic nenalezeno.{% else %}Zatím žádné cviky.{% endif %}</p>
+  {% if q or area or position or serie %}
+  <p>Nic nenalezeno.</p>
   <a href="{% url 'exercise_create' %}">Přidat další cvik</a>
+  {% else %}
+  <p>Zatím žádné cviky.</p>
+  <a href="{% url 'exercise_create' %}">Nadiktovat první cvik</a>
+  {% endif %}
 </div>
 {% endif %}
 {% endblock %}

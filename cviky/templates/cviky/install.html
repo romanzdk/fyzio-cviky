@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Upozornění{% endblock %}
+{% block title %}Připomínky{% endblock %}
 
 {% block content %}
 <p class="eyebrow"><a href="{% url 'profile' %}">‹ Profil</a></p>
-<h1>Upozornění</h1>
+<h1>Připomínky</h1>
 <section class="card">
   <h2>Nejdřív přidej appku na plochu</h2>
   <ol class="steps-install">
@@ -16,10 +16,10 @@
 </section>
 
 {% if not vapid_public_key %}
-<p>Upozornění nejsou na serveru nastavená.</p>
+<p>Připomínky nejsou na serveru nastavené.</p>
 {% else %}
-<p class="hint">Upozornění jde zapnout jen v appce otevřené z plochy.</p>
-<button type="button" class="btn" id="enable-push" data-vapid-public-key="{{ vapid_public_key }}" hidden>Zapnout upozornění</button>
+<p class="hint">Připomínky jde zapnout jen v appce otevřené z plochy.</p>
+<button type="button" class="btn" id="enable-push" data-vapid-public-key="{{ vapid_public_key }}" hidden>Zapnout připomínky</button>
 <p id="push-status" class="hint"></p>
 <script nonce="{{ csp_nonce }}">
   document.addEventListener('DOMContentLoaded', function () {
