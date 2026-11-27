@@ -15,7 +15,7 @@ def test_register_with_valid_invite_creates_user_and_marks_used(client):
     invite = Invite.objects.create()
     response = client.post(
         reverse("register", args=[invite.token]),
-        {"username": "novak", "password1": "SilneHeslo123", "password2": "SilneHeslo123"},
+        {"username": "novak", "password1": "SilneHeslo123", "password2": "SilneHeslo123", "consent": "on"},
     )
     assert response.status_code == 302
     user = User.objects.get(username="novak")
@@ -111,3 +111,18 @@ def test_admin_login_shares_the_throttle(client):
     client.post("/sprava/login/", {"username": "admin", "password": "SilneHeslo123"})
     assert "_auth_user_id" not in client.session
     cache.clear()
+
+
+@pytest.mark.django_db
+def test_register_requires_health_data_consent(client):
+    invite = Invite.objects.create()
+    response = client.post(
+        reverse("register", args=[invite.token]),
+        {"username": "novak", "password1": "SilneHeslo123", "password2": "SilneHeslo123"},
+    )
+    assert response.status_code == 200
+    assert "Bez souhlasu" in response.content.decode()
+    assert not User.objects.filter(username="novak").exists()
+    invite.refresh_from_db()
+    assert invite.used_at is None
+    assert 'href="/soukromi/"' in response.content.decode()

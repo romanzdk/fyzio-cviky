@@ -9,6 +9,7 @@
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
+  <p class="hint"><a href="{% url 'privacy' %}">Ochrana osobních údajů</a> – co ukládám a komu to posílám.</p>
   <button type="submit">Vytvořit účet</button>
 </form>
 {% endblock %}

@@ -10,5 +10,5 @@ RUN DJANGO_DEBUG=0 DJANGO_SECRET_KEY=build VAPID_SUBJECT=mailto:build@example.co
 RUN useradd --create-home app
 USER app
 EXPOSE 8000
-ENV WEB_CONCURRENCY=2
+ENV WEB_CONCURRENCY=2 DJANGO_DEBUG=0
 CMD ["sh", "-c", "python manage.py migrate --noinput && gunicorn config.wsgi -b 0.0.0.0:8000 --timeout 60"]

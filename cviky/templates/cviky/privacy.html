@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Ochrana osobních údajů – Cviky{% endblock %}
+{% block main_class %}landing{% endblock %}
+
+{% block content %}
+<article class="prose">
+<h1>Ochrana osobních údajů</h1>
+<p class="hint">Platí od 27. 11. 2026</p>
+
+<h2>Kdo data zpracovává</h2>
+<p>Appku Cviky provozuju já, Roman Žydyk, jako soukromá osoba. Jsem správce tvých údajů. Kontakt: <a href="{{ mailto }}">{{ email }}</a>.</p>
+
+<h2>Jaká data ukládám</h2>
+<ul>
+  <li><strong>Účet:</strong> uživatelské jméno, heslo (jen jako otisk, tzv. hash, samotné heslo neznám) a datum registrace.</li>
+  <li><strong>Cviky:</strong> text, který nadiktuješ, a karta, která z něj vznikne (název, oblast těla, poloha, postup, na co dát pozor, opakování). Tyto popisy jsou <strong>údaje o tvém zdraví</strong>.</li>
+  <li><strong>Série a cvičení:</strong> názvy sérií, dny a časy připomínek a kdy jsi který cvik odklikl.</li>
+  <li><strong>Upozornění:</strong> když je zapneš, uložím adresu, kterou pro doručení připomínek vydá tvůj prohlížeč (Apple, Google, Mozilla nebo Microsoft).</li>
+</ul>
+
+<h2>Proč a na jakém základě</h2>
+<p>Data potřebuju, aby appka fungovala: ukázala tvoje cviky, připomněla je a spočítala, co jsi dlouho nedělal (čl. 6 odst. 1 písm. b GDPR). Údaje o zdraví zpracovávám jen s tvým výslovným souhlasem, který dáváš při registraci (čl. 9 odst. 2 písm. a GDPR). Souhlas můžeš kdykoli odvolat: napiš mi a smažu tvůj účet i všechna data. Data neprodávám, nepoužívám k reklamě a nikomu je nedávám kromě služeb níže.</p>
+
+<h2>Komu data posílám</h2>
+<ul>
+  <li><strong>Hetzner Online GmbH</strong> – na jejich serveru v Helsinkách (Finsko) běží appka i databáze.</li>
+  <li><strong>OpenRouter (USA)</strong> – text diktátu pošlu jazykovému modelu, který z něj udělá kartu cviku. Posílám jen ten text, ne tvoje jméno ani účet. Volám ho s nastavením „zero data retention“: OpenRouter ani poskytovatel modelu text neukládají a nepoužívají ho k trénování.</li>
+  <li><strong>Apple, Google, Mozilla nebo Microsoft</strong> (podle tvého zařízení) – doručí připomínku. Ta obsahuje název série a počet cviků.</li>
+  <li><strong>GoatCounter</strong> – počítá návštěvy stránek. Nepoužívá cookies, neukládá tvou IP adresu ani nic do prohlížeče. Data má na serverech Hetzner ve Finsku a Německu.</li>
+</ul>
+
+<h2>Cookies</h2>
+<p>Používám jen dvě nezbytné cookies: jednu pro přihlášení (platí rok, abys nemusel/a zadávat heslo) a jednu pro ochranu formulářů. Žádné reklamní ani sledovací cookies, proto tu není cookie lišta.</p>
+
+<h2>Jak dlouho</h2>
+<p>Data držím, dokud máš účet. Když mě požádáš o smazání, smažu účet i všechna data bez zbytečného odkladu, nejpozději do 30 dnů. Technické záznamy o chybách neobsahují texty cviků a průběžně se přepisují.</p>
+
+<h2>Tvoje práva</h2>
+<p>Můžeš ode mě chtít přehled nebo kopii svých dat, jejich opravu (cviky si upravíš i sám/sama v appce), smazání nebo omezení zpracování a můžeš odvolat souhlas. Stačí napsat na <a href="{{ mailto }}">{{ email }}</a>. Když se ti nebude líbit, jak s daty zacházím, můžeš si stěžovat u Úřadu pro ochranu osobních údajů (<a href="https://uoou.gov.cz" rel="noopener">uoou.gov.cz</a>).</p>
+</article>
+{% endblock %}

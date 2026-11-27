@@ -1,3 +1,4 @@
+from django import forms
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
@@ -9,6 +10,11 @@ from cviky.models import Invite, User
 
 
 class RegisterForm(UserCreationForm):
+    consent = forms.BooleanField(
+        label="Souhlasím se zpracováním údajů o mém zdraví (popisů cviků) podle zásad ochrany osobních údajů.",
+        error_messages={"required": "Bez souhlasu appka nemůže ukládat tvoje cviky."},
+    )
+
     class Meta(UserCreationForm.Meta):
         model = User
 

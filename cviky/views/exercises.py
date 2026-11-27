@@ -2,15 +2,18 @@ import unicodedata
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.lookups import Unaccent
+from django.core.cache import cache
 from django.db.models import CharField, F, Func, Q, Value
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 
 from cviky.choices import AREAS, POSITIONS
 from cviky.forms import ExerciseForm
-from cviky.llm import structure_exercise
+from cviky.llm import ExerciseDraft, structure_exercise
 from cviky.models import Exercise, Series
 
 MAX_TEXT_LENGTH = 5000
+DAILY_LLM_LIMIT = 50
 
 EMPTY_TEXT_ERROR = "Zadej popis cviku."
 TOO_LONG_ERROR = f"Popis je příliš dlouhý (max {MAX_TEXT_LENGTH} znaků)."
@@ -100,6 +103,15 @@ def _prefill_title(text: str) -> str:
     return prefix.rstrip() + "…"
 
 
+def _structure_within_limit(user, text: str) -> ExerciseDraft:
+    # ponytail: per-process LocMemCache, so each gunicorn worker counts on its own; shared cache if it matters
+    key = f"llm-calls:{user.pk}:{timezone.localdate()}"
+    cache.add(key, 0, 24 * 60 * 60)
+    if cache.incr(key) > DAILY_LLM_LIMIT:
+        return ExerciseDraft()
+    return structure_exercise(text)
+
+
 def _review(request, draft, original_text):
     form = ExerciseForm(
         initial={
@@ -138,7 +150,7 @@ def create(request):
                     "cviky/exercise_create.html",
                     {"step": "dictate", "error": TOO_LONG_ERROR, "text": text},
                 )
-            return _review(request, structure_exercise(text), text)
+            return _review(request, _structure_within_limit(request.user, text), text)
         if step == "save":
             form = ExerciseForm(request.POST)
             if form.is_valid():

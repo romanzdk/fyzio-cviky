@@ -1,6 +1,7 @@
 import pytest
 from django.contrib.auth import get_user_model
 from django.contrib.staticfiles import finders
+from django.core.cache import cache
 from django.urls import reverse
 
 from cviky.choices import AREAS, POSITIONS
@@ -291,3 +292,16 @@ def test_detail_shows_illustrations_for_every_area_and_position(client, django_u
         assert f'alt="{position_label}"' in html
     bare = Exercise.objects.create(user=user, title="Bez ikon")
     assert "<figure>" not in client.get(reverse("exercise_detail", args=[bare.pk])).content.decode()
+
+
+@pytest.mark.django_db
+def test_llm_calls_capped_per_user_per_day(logged_in, monkeypatch):
+    calls = []
+    monkeypatch.setattr(exercises_views, "structure_exercise", lambda text: calls.append(text) or DRAFT)
+    monkeypatch.setattr(exercises_views, "DAILY_LLM_LIMIT", 2)
+    cache.clear()
+    for _ in range(3):
+        response = logged_in.post(reverse("exercise_create"), {"step": "dictate", "text": "diktát"})
+    assert len(calls) == 2
+    assert "Automatické zpracování se nepovedlo" in response.content.decode()
+    cache.clear()
