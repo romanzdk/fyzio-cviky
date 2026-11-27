@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Dnes{% endblock %}
+
+{% block content %}
+<h1>Dnes</h1>
+<p>Připomínky fyzioterapeutických cvičení.</p>
+<form method="post" action="{% url 'logout' %}">
+  {% csrf_token %}
+  <button type="submit">Odhlásit se</button>
+</form>
+{% endblock %}

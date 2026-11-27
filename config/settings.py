@@ -59,6 +59,9 @@ DATABASES = {
 }
 
 AUTH_USER_MODEL = "cviky.User"
+LOGIN_URL = "/prihlaseni/"
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/prihlaseni/"
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},

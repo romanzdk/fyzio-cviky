@@ -1,0 +1,53 @@
+import pytest
+from django.contrib.auth import get_user_model
+from django.urls import reverse
+
+from cviky.models import Invite
+
+User = get_user_model()
+
+
+@pytest.mark.django_db
+def test_register_with_valid_invite_creates_user_and_marks_used(client):
+    invite = Invite.objects.create()
+    response = client.post(
+        reverse("register", args=[invite.token]),
+        {"username": "novak", "password1": "SilneHeslo123", "password2": "SilneHeslo123"},
+    )
+    assert response.status_code == 302
+    user = User.objects.get(username="novak")
+    invite.refresh_from_db()
+    assert invite.used_by == user
+    assert invite.used_at is not None
+    assert client.session["_auth_user_id"] == str(user.pk)
+
+
+@pytest.mark.django_db
+def test_used_invite_returns_404(client):
+    user = User.objects.create_user(username="a", password="SilneHeslo123")
+    invite = Invite.objects.create(used_by=user)
+    response = client.get(reverse("register", args=[invite.token]))
+    assert response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_unknown_token_returns_404(client):
+    response = client.get(reverse("register", args=["00000000-0000-0000-0000-000000000000"]))
+    assert response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_no_open_registration(client):
+    response = client.post(
+        "/registrace/",
+        {"username": "x", "password1": "SilneHeslo123", "password2": "SilneHeslo123"},
+    )
+    assert response.status_code == 404
+    assert not User.objects.filter(username="x").exists()
+
+
+@pytest.mark.django_db
+def test_anonymous_redirected_to_login(client):
+    response = client.get("/")
+    assert response.status_code == 302
+    assert response.url == "/prihlaseni/?next=/"
