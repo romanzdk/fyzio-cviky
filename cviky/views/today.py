@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_POST
@@ -36,9 +37,12 @@ def home(request):
 @login_required
 @require_POST
 def toggle(request):
-    exercise = get_object_or_404(Exercise, pk=request.POST.get("exercise"), user=request.user)
+    exercise_id = request.POST.get("exercise", "")
+    series_id = request.POST.get("series", "")
+    if not exercise_id.isdigit() or (series_id and not series_id.isdigit()):
+        raise Http404
+    exercise = get_object_or_404(Exercise, pk=exercise_id, user=request.user)
     series = None
-    series_id = request.POST.get("series")
     if series_id:
         series = get_object_or_404(Series, pk=series_id, user=request.user)
 

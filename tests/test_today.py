@@ -149,3 +149,10 @@ def test_profile_rejects_out_of_range(logged_in, user):
     assert response.status_code == 200
     user.refresh_from_db()
     assert user.neglect_days == 7
+
+
+@pytest.mark.django_db
+def test_toggle_with_non_numeric_id_returns_404(client, django_user_model):
+    user = django_user_model.objects.create_user(username="z", password="SilneHeslo123")
+    client.force_login(user)
+    assert client.post("/hotovo/", {"exercise": "abc"}).status_code == 404
