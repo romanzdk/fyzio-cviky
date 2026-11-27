@@ -15,13 +15,19 @@ def _entities(text: str) -> str:
     return mark_safe("".join(f"&#{ord(c)};" for c in text))
 
 
+def _landing(request):
+    if "app" in request.GET:
+        return redirect("login")
+    return render(
+        request,
+        "cviky/landing.html",
+        {"email": _entities(CONTACT_EMAIL), "mailto": _entities(f"mailto:{CONTACT_EMAIL}")},
+    )
+
+
 def home(request):
     if not request.user.is_authenticated:
-        return render(
-            request,
-            "cviky/landing.html",
-            {"email": _entities(CONTACT_EMAIL), "mailto": _entities(f"mailto:{CONTACT_EMAIL}")},
-        )
+        return _landing(request)
     now = timezone.now()
     today = local_date(now)
     rows = []

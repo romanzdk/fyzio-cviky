@@ -2,7 +2,7 @@
   "name": "Cviky",
   "short_name": "Cviky",
   "lang": "cs",
-  "start_url": "/",
+  "start_url": "/?app",
   "display": "standalone",
   "background_color": "#f4f6f5",
   "theme_color": "#2e7d32",

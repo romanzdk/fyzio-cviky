@@ -140,7 +140,7 @@ def test_manifest_fields(client):
     assert manifest["name"] == "Cviky"
     assert manifest["short_name"] == "Cviky"
     assert manifest["lang"] == "cs"
-    assert manifest["start_url"] == "/"
+    assert manifest["start_url"] == "/?app"
     assert manifest["display"] == "standalone"
     assert manifest["background_color"] == "#f4f6f5"
     assert manifest["theme_color"] == "#2e7d32"
