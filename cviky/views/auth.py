@@ -1,5 +1,4 @@
 from django.contrib.auth import login
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
 from django.http import Http404
@@ -35,8 +34,3 @@ def register(request, token):
     else:
         form = RegisterForm()
     return render(request, "cviky/register.html", {"form": form, "invite": invite})
-
-
-@login_required
-def home(request):
-    return render(request, "cviky/dnes.html")

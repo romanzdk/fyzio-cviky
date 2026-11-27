@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load cviky_extras %}
+
+{% block title %}Dnes{% endblock %}
+
+{% block content %}
+<h1>Dnes · {{ today.weekday|weekday_abbr }} {{ today|date:"j. n." }}</h1>
+
+{% for row in rows %}
+<div class="card">
+  <h2>{{ row.series.name }} <span class="hint">{{ row.done_count }}/{{ row.total }} ✓</span></h2>
+  {% for item in row.items %}
+  <div>
+    <form method="post" action="{% url 'toggle' %}" style="display:inline">
+      {% csrf_token %}
+      <input type="hidden" name="exercise" value="{{ item.exercise.pk }}">
+      <input type="hidden" name="series" value="{{ row.series.pk }}">
+      <button type="submit" aria-label="Odkliknout">{% if item.checked %}☑{% else %}☐{% endif %}</button>
+    </form>
+    <a href="{% url 'exercise_detail' item.exercise.pk %}">{{ item.exercise.title }}</a>
+  </div>
+  {% endfor %}
+</div>
+{% empty %}
+<p>Dnes nemáš naplánovanou žádnou sérii. <a href="{% url 'series_list' %}">Upravit série</a></p>
+{% endfor %}
+
+{% if neglected %}
+<h2>⚠ Dlouho jsi nedělal</h2>
+{% for exercise, days in neglected %}
+<div>
+  <form method="post" action="{% url 'toggle' %}" style="display:inline">
+    {% csrf_token %}
+    <input type="hidden" name="exercise" value="{{ exercise.pk }}">
+    <button type="submit" aria-label="Odkliknout">☐</button>
+  </form>
+  <a href="{% url 'exercise_detail' exercise.pk %}">{{ exercise.title }}</a> ({{ days|days_label }})
+</div>
+{% endfor %}
+{% endif %}
+
+<form method="get" action="{% url 'exercise_create' %}">
+  <button type="submit">Nadiktovat nový cvik</button>
+</form>
+{% endblock %}

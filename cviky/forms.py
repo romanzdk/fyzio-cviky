@@ -27,3 +27,9 @@ class SeriesForm(forms.ModelForm):
         model = Series
         fields = ["name", "weekdays", "remind_at"]
         widgets = {"remind_at": forms.TimeInput(attrs={"type": "time"})}
+
+
+class ProfileForm(forms.Form):
+    neglect_days = forms.IntegerField(
+        min_value=1, max_value=60, label="Dlouho jsi nedělal (dny)"
+    )

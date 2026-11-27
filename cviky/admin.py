@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.urls import reverse
 from django.utils.html import format_html
 
-from cviky.models import Exercise, Invite, Series, SeriesExercise, User
+from cviky.models import Completion, Exercise, Invite, Series, SeriesExercise, User
 
 
 class SeriesExerciseInline(admin.TabularInline):
@@ -22,6 +22,12 @@ class ExerciseAdmin(admin.ModelAdmin):
     list_display = ("title", "user", "area", "position", "created_at")
     list_filter = ("area", "position")
     search_fields = ("title", "tags")
+
+
+@admin.register(Completion)
+class CompletionAdmin(admin.ModelAdmin):
+    list_display = ("exercise", "series", "user", "done_at")
+    list_filter = ("series",)
 
 
 @admin.register(Invite)

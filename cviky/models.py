@@ -3,6 +3,7 @@ import uuid
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.utils import timezone
 
 from cviky.choices import AREAS, POSITIONS
 
@@ -57,6 +58,21 @@ class SeriesExercise(models.Model):
 
     def __str__(self):
         return f"{self.series} – {self.exercise}"
+
+
+class Completion(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="completions")
+    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, related_name="completions")
+    series = models.ForeignKey(
+        Series, on_delete=models.CASCADE, null=True, blank=True, related_name="completions"
+    )
+    done_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        ordering = ["-done_at"]
+
+    def __str__(self):
+        return f"{self.exercise} – {self.done_at:%Y-%m-%d}"
 
 
 class Invite(models.Model):

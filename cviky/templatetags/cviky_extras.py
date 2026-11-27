@@ -22,3 +22,17 @@ def position_label(key):
 @register.filter
 def weekday_labels(days):
     return ", ".join(WEEKDAY_LABELS.get(day, str(day)) for day in days)
+
+
+@register.filter
+def weekday_abbr(day):
+    return WEEKDAY_LABELS.get(day, "")
+
+
+@register.filter
+def days_label(count):
+    if count == 1:
+        return f"{count} den"
+    if 2 <= count <= 4:
+        return f"{count} dny"
+    return f"{count} dní"
