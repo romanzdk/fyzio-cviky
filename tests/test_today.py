@@ -108,12 +108,12 @@ def test_other_users_exercise_cannot_be_checked(logged_in, other):
 def test_page_shows_neglected_section_only_when_non_empty(logged_in, user):
     exercise = Exercise.objects.create(user=user, title="Zapomenutý")
     item = SeriesExercise.objects.get(series=_series_with_exercise(user, exercise))
-    assert "Dlouho jsi nedělal" not in logged_in.get(reverse("home")).content.decode()
+    assert "Dlouho nedělané" not in logged_in.get(reverse("home")).content.decode()
     SeriesExercise.objects.filter(pk=item.pk).update(
         added_at=timezone.now() - datetime.timedelta(days=7)
     )
     content = logged_in.get(reverse("home")).content.decode()
-    assert "Dlouho jsi nedělal" in content
+    assert "Dlouho nedělané" in content
     assert "7 dní" in content
 
 

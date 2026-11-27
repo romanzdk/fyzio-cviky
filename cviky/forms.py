@@ -54,5 +54,5 @@ class SeriesForm(forms.ModelForm):
 
 class ProfileForm(forms.Form):
     neglect_days = forms.IntegerField(
-        min_value=1, max_value=60, label="Dlouho jsi nedělal (dny)"
+        min_value=1, max_value=60, label="Dlouho nedělané (dny)"
     )

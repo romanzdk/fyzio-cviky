@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
     try {
       var permission = await Notification.requestPermission();
       if (permission !== 'granted') {
-        status.textContent = 'Upozornění byla zamítnuta.';
+        status.textContent = 'Připomínky jsou v telefonu zakázané.';
         button.disabled = false;
         return;
       }
@@ -46,9 +46,9 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!response.ok) {
         throw new Error('HTTP ' + response.status);
       }
-      status.textContent = 'Upozornění zapnuta';
+      status.textContent = 'Připomínky zapnuté';
     } catch (error) {
-      status.textContent = 'Upozornění se nepodařilo zapnout.';
+      status.textContent = 'Připomínky se nepodařilo zapnout.';
       button.disabled = false;
     }
   });

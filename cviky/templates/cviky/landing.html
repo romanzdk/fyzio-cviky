@@ -8,7 +8,7 @@
 <header class="hero">
   <div class="brand"><img src="{% static 'cviky/icon-192.png' %}" alt="">Cviky</div>
   <h1>Cviky z fyzioterapie, na které už nezapomeneš</h1>
-  <p class="lead">Po návštěvě fyzioterapeuta cvik jen nadiktuješ do telefonu. Appka z něj udělá přehlednou kartu, poskládá cviky do sérií a každý den ti připomene, co máš cvičit – i to, co jsi dlouho nedělal.</p>
+  <p class="lead">Po návštěvě fyzioterapeuta cvik jen nadiktuješ do telefonu. Appka z něj udělá přehlednou kartu, poskládá cviky do sérií a každý den ti připomene, co máš cvičit – i dlouho nedělané cviky.</p>
   <a class="btn hero-btn" href="{% url 'login' %}">Přihlásit se</a>
   <p class="hint">Appka je zatím jen pro pozvané.</p>
 </header>
@@ -61,7 +61,7 @@
     </ul>
   </div>
   <div class="card warn">
-    <h2>⚠ Dlouho jsi nedělal</h2>
+    <h2>⚠ Dlouho nedělané</h2>
     <ul class="list">
       <li class="check-row"><span class="check" aria-hidden="true">{% include "cviky/check_icon.html" %}</span><span class="title">Rotace v sedu</span><span class="meta">12 dní</span></li>
     </ul>
