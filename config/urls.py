@@ -2,11 +2,15 @@ from django.contrib import admin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path
 
-from cviky.views import auth, exercises, health, profile, series, today
+from cviky.views import auth, exercises, health, profile, push, series, today
 
 urlpatterns = [
     path("sprava/", admin.site.urls),
     path("healthz", health.healthz),
+    path("sw.js", push.service_worker, name="service_worker"),
+    path("manifest.webmanifest", push.manifest, name="manifest"),
+    path("instalace/", push.install, name="install"),
+    path("push/odebirat/", push.subscribe, name="push_subscribe"),
     path("", today.home, name="home"),
     path("hotovo/", today.toggle, name="toggle"),
     path("profil/", profile.profile, name="profile"),

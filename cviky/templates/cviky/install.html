@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Upozornění{% endblock %}
+
+{% block content %}
+<h1>Upozornění</h1>
+<p>Pro zapnutí upozornění si nejdřív přidej appku na plochu:</p>
+<p>1. Klepni na Sdílet (čtvereček se šipkou)</p>
+<p>2. Vyber Přidat na plochu</p>
+<p>3. Otevři appku z plochy a vrať se sem</p>
+
+{% if not vapid_public_key %}
+<p>Upozornění nejsou na serveru nastavená.</p>
+{% else %}
+<p class="hint">Upozornění jde zapnout jen v appce otevřené z plochy.</p>
+<button type="button" id="enable-push" data-vapid-public-key="{{ vapid_public_key }}" hidden>Zapnout upozornění</button>
+<p id="push-status"></p>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var button = document.getElementById('enable-push');
+    var standalone =
+      window.navigator.standalone === true ||
+      window.matchMedia('(display-mode: standalone)').matches;
+    if (button && standalone) {
+      button.hidden = false;
+    }
+  });
+</script>
+<script src="{% static 'cviky/push.js' %}"></script>
+{% endif %}
+{% endblock %}

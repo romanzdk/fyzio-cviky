@@ -1,8 +1,13 @@
 <!doctype html>
+{% load static %}
 <html lang="cs">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#2e7d32">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="{% url 'manifest' %}">
+<link rel="apple-touch-icon" href="{% static 'cviky/apple-touch-icon.png' %}">
 <title>{% block title %}Fyzio cvičky{% endblock %}</title>
 <style>
   :root { color-scheme: light dark; }
@@ -26,9 +31,15 @@
   <a href="{% url 'home' %}">Dnes</a>
   <a href="{% url 'exercise_list' %}">Cviky</a>
   <a href="{% url 'series_list' %}">Série</a>
+  <a href="{% url 'install' %}">Upozornění</a>
   <a href="{% url 'profile' %}">Profil</a>
 </nav>
 {% block content %}{% endblock %}
 </main>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js');
+  }
+</script>
 </body>
 </html>
