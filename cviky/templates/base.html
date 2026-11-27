@@ -53,12 +53,12 @@
   {% endif %}
 </nav>
 {% endif %}
-<script>
+<script nonce="{{ csp_nonce }}">
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js');
   }
 </script>
-<script data-goatcounter="https://cviky.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script nonce="{{ csp_nonce }}" data-goatcounter="https://cviky.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 {% endwith %}
 </html>

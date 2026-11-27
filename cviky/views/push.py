@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -11,6 +12,23 @@ from django.views.decorators.http import require_POST
 from cviky.models import PushSubscription
 
 STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
+
+# The reminder scheduler POSTs to every stored endpoint, so only real push services are accepted (no SSRF).
+PUSH_SERVICE_DOMAINS = ("push.apple.com", "fcm.googleapis.com", "push.services.mozilla.com", "notify.windows.com")
+
+
+def _is_push_service(endpoint: str) -> bool:
+    try:
+        url = urlsplit(endpoint)
+        port = url.port
+    except ValueError:
+        return False
+    host = url.hostname or ""
+    return (
+        url.scheme == "https"
+        and port in (None, 443)
+        and any(host == domain or host.endswith("." + domain) for domain in PUSH_SERVICE_DOMAINS)
+    )
 
 
 def service_worker(request):
@@ -43,7 +61,7 @@ def subscribe(request):
         auth = keys["auth"]
     except (json.JSONDecodeError, KeyError, TypeError):
         return JsonResponse({"error": "invalid"}, status=400)
-    if not endpoint or not p256dh or not auth:
+    if not isinstance(endpoint, str) or not _is_push_service(endpoint) or not p256dh or not auth:
         return JsonResponse({"error": "invalid"}, status=400)
     PushSubscription.objects.update_or_create(
         endpoint=endpoint,

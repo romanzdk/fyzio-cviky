@@ -1,8 +1,10 @@
 import pytest
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.urls import reverse
 from django.utils import timezone
 
+from cviky.backends import MAX_FAILURES
 from cviky.models import Invite
 
 User = get_user_model()
@@ -81,3 +83,31 @@ def test_profile_has_logout_button(client):
     assert "Odhlásit se" in content
     assert 'action="/odhlaseni/"' in content
     assert "csrfmiddlewaretoken" in content
+
+
+@pytest.mark.django_db
+def test_login_blocked_after_too_many_failures(client):
+    cache.clear()
+    User.objects.create_user(username="a", password="SilneHeslo123")
+    for _ in range(MAX_FAILURES):
+        client.post(reverse("login"), {"username": "a", "password": "spatne"})
+    response = client.post(reverse("login"), {"username": "a", "password": "SilneHeslo123"})
+    assert "_auth_user_id" not in client.session
+    assert response.status_code == 200
+
+    other_ip = client.post(
+        reverse("login"), {"username": "a", "password": "SilneHeslo123"}, HTTP_X_FORWARDED_FOR="203.0.113.9"
+    )
+    assert other_ip.status_code == 302
+    cache.clear()
+
+
+@pytest.mark.django_db
+def test_admin_login_shares_the_throttle(client):
+    cache.clear()
+    User.objects.create_superuser(username="admin", password="SilneHeslo123")
+    for _ in range(MAX_FAILURES):
+        client.post(reverse("login"), {"username": "admin", "password": "spatne"})
+    client.post("/sprava/login/", {"username": "admin", "password": "SilneHeslo123"})
+    assert "_auth_user_id" not in client.session
+    cache.clear()

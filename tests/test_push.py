@@ -9,7 +9,7 @@ from cviky.models import PushSubscription
 
 User = get_user_model()
 
-ENDPOINT = "https://push.example.com/sub/abc"
+ENDPOINT = "https://web.push.apple.com/sub/abc"
 KEYS = {"p256dh": "BPabc", "auth": "auth123"}
 
 
@@ -69,6 +69,38 @@ def test_same_endpoint_reassigns_user(logged_in, other, user, client):
     assert response.status_code == 204
     assert PushSubscription.objects.count() == 1
     assert PushSubscription.objects.get().user == other
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "endpoint",
+    [
+        "https://fcm.googleapis.com/fcm/send/x",
+        "https://updates.push.services.mozilla.com/wpush/v2/x",
+        "https://wns2-am3p.notify.windows.com/w/?token=x",
+    ],
+)
+def test_other_push_services_accepted(logged_in, endpoint):
+    assert _subscribe(logged_in, endpoint=endpoint).status_code == 204
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "endpoint",
+    [
+        "http://web.push.apple.com/x",
+        "https://web.push.apple.com:8443/x",
+        "https://evil.com/web.push.apple.com",
+        "https://web.push.apple.com.evil.com/x",
+        "http://db:5432/",
+        "https://169.254.169.254/latest",
+        "https://[::1/x",
+        123,
+    ],
+)
+def test_non_push_endpoint_rejected(logged_in, endpoint):
+    assert _subscribe(logged_in, endpoint=endpoint).status_code == 400
+    assert not PushSubscription.objects.exists()
 
 
 @pytest.mark.django_db

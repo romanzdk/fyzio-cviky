@@ -21,7 +21,7 @@
 <p class="hint">Upozornění jde zapnout jen v appce otevřené z plochy.</p>
 <button type="button" class="btn" id="enable-push" data-vapid-public-key="{{ vapid_public_key }}" hidden>Zapnout upozornění</button>
 <p id="push-status" class="hint"></p>
-<script>
+<script nonce="{{ csp_nonce }}">
   document.addEventListener('DOMContentLoaded', function () {
     var button = document.getElementById('enable-push');
     var standalone =
