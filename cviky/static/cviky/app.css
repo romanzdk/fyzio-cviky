@@ -288,3 +288,45 @@ fieldset.weekdays { border: 0; margin: 0; padding: 0; min-width: 0; }
 
 .check-row .check:active, .btn:active, button[type="submit"]:active, .item:active, .tabbar a:active, .fab:active { opacity: 0.6; }
 .toast { margin: 0 0 12px; padding: 10px 14px; border-radius: 12px; background: var(--primary-soft); color: var(--primary); font-weight: 600; }
+
+.side-brand, .side-dictate { display: none !important; }
+
+@media (min-width: 768px) {
+  :root { --side: 232px; }
+  body.app main { max-width: 48rem; margin: 0 auto 0 calc(var(--side) + max(0px, (100vw - var(--side) - 48rem) / 2)); padding: 40px 32px 48px; }
+  .fab { display: none; }
+
+  .tabbar {
+    top: 0;
+    right: auto;
+    width: var(--side);
+    height: auto;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 4px;
+    padding: 24px 12px;
+    border-top: 0;
+    border-right: 1px solid var(--line);
+    background: var(--surface);
+  }
+  .tabbar a { flex: none; flex-direction: row; gap: 12px; padding: 10px 12px; border-radius: 12px; font-size: 15px; }
+  .tabbar a.on { background: var(--primary-soft); }
+  .tabbar svg { width: 22px; height: 22px; }
+
+  .tabbar .side-brand { display: flex !important; align-items: center; gap: 10px; padding: 0 12px 20px; font-weight: 700; font-size: 18px; }
+  .side-brand img { width: 32px; height: 32px; border-radius: 8px; }
+  .tabbar a.side-dictate {
+    display: flex !important;
+    margin-top: 16px;
+    justify-content: center;
+    background: var(--primary);
+    color: var(--on-primary);
+    font-weight: 650;
+  }
+
+  h1 { font-size: 34px; }
+  .listing { display: grid; grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); }
+  .listing .item + .item { border-top: 0; }
+  .listing .item { border-bottom: 1px solid var(--line); }
+  .auth { padding-top: 96px; }
+}

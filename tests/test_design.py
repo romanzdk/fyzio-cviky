@@ -143,3 +143,11 @@ def test_check_button_label_does_not_change_with_state(logged_in, django_user_mo
     assert 'aria-label="Hotovo: Krk"' in logged_in.get("/").content.decode()
     logged_in.post("/hotovo/", {"exercise": exercise.pk, "series": series.pk})
     assert 'aria-label="Hotovo: Krk"' in logged_in.get("/").content.decode()
+
+
+@pytest.mark.django_db
+def test_sidebar_has_brand_and_dictate_link_on_every_page(logged_in):
+    for url in ("/", "/cviky/novy/", "/profil/"):
+        nav = logged_in.get(url).content.decode().split('<nav class="tabbar"', 1)[1].split("</nav>", 1)[0]
+        assert 'class="side-brand"' in nav
+        assert 'class="side-dictate"' in nav and 'href="/cviky/novy/"' in nav

@@ -29,7 +29,7 @@
 </form>
 
 {% if exercises %}
-<div class="card flush">
+<div class="card flush listing">
   {% for e in exercises %}
   <a class="item" href="{% url 'exercise_detail' e.pk %}">
     <span class="thumb">{% if e.area %}<img src="{% static 'cviky/body/'|add:e.area|add:'.svg' %}" alt="">{% endif %}</span>
