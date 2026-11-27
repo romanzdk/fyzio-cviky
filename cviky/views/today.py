@@ -2,14 +2,32 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 from django.views.decorators.http import require_POST
 
 from cviky.models import Completion, Exercise, Series
 from cviky.today import done_today, local_date, local_day_range, neglected, todays_series
 
+CONTACT_EMAIL = "romanzdk@gmail.com"
 
-@login_required
+
+def _entities(text: str) -> str:
+    return mark_safe("".join(f"&#{ord(c)};" for c in text))
+
+
+def _landing(request):
+    if "app" in request.GET:
+        return redirect("login")
+    return render(
+        request,
+        "cviky/landing.html",
+        {"email": _entities(CONTACT_EMAIL), "mailto": _entities(f"mailto:{CONTACT_EMAIL}")},
+    )
+
+
 def home(request):
+    if not request.user.is_authenticated:
+        return _landing(request)
     now = timezone.now()
     today = local_date(now)
     rows = []
