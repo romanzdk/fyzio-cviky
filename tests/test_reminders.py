@@ -1,4 +1,5 @@
 import datetime
+import json
 from zoneinfo import ZoneInfo
 
 import pytest
@@ -287,12 +288,13 @@ def test_neglected_count_includes_other_series(user, monkeypatch, settings):
     sent = []
     monkeypatch.setattr("cviky.reminders.webpush", lambda **kw: sent.append(kw["data"]))
     now = at(2027, 3, 1, 7, 30)
-    make_series(user, weekdays=[now.weekday()], remind_at=datetime.time(7, 30), exercises=1)
+    today_series = make_series(user, weekdays=[now.weekday()], remind_at=datetime.time(7, 30), exercises=1)
+    SeriesExercise.objects.filter(series=today_series).update(added_at=now)
     other = make_series(user, name="Večerní", weekdays=[], exercises=1)
     SeriesExercise.objects.filter(series=other).update(added_at=now - datetime.timedelta(days=10))
     subscribe(user)
     assert send_due(now) == 1
-    assert "+ 1 dlouho nedělaný" in sent[0]
+    assert json.loads(sent[0])["body"] == "1 cvik + 1 dlouho nedělaný"
 
 
 def test_unexpected_push_error_does_not_stop_other_subscriptions(user, monkeypatch, settings):
