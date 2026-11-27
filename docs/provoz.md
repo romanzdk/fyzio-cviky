@@ -1,5 +1,7 @@
 # Provoz fyzio-cviky (ruční příručka)
 
+> Konkrétní hodnoty (IP serveru, admin účet, kontakt) jsou tu nahrazené značkami `<…>`. Skutečné hodnoty má vlastník v soukromé poznámce.
+
 Tahle příručka má stačit k tomu, aby šlo appku opravit, nasadit, obnovit nebo smazat **bez AI**: jen s terminálem, SSH a prohlížečem. Všechny příkazy jsou kompletní a dají se zkopírovat.
 
 Obsah:
@@ -25,10 +27,10 @@ Obsah:
 iPhone (appka na ploše)
    │  HTTPS
    ▼
-cviky.romanzdk.com  ── DNS v Cloudflare: A záznam → 2.29.199.192 (DNS only, ne proxy)
+cviky.romanzdk.com  ── DNS v Cloudflare: A záznam → <IP serveru> (DNS only, ne proxy)
    │
    ▼
-Hetzner VPS 2.29.199.192 (stejný server jako Vozopis)
+Hetzner VPS <IP serveru> (stejný server jako Vozopis)
    ├─ /opt/esk     … Vozopis: jeho Caddy drží porty 80/443 a posílá cviky.romanzdk.com dál
    └─ /opt/cviky   … tahle appka (docker compose):
         ├─ web        Django + gunicorn, port 8000, v síti "cviky" pod jménem cviky-web
@@ -41,9 +43,9 @@ Hetzner VPS 2.29.199.192 (stejný server jako Vozopis)
 
 | Věc | Kde |
 |---|---|
-| Kód | GitHub `romanzdk/fyzio-cviky` (soukromé), větev `main` |
+| Kód | GitHub `romanzdk/fyzio-cviky` (veřejné), větev `main` |
 | Image | `ghcr.io/romanzdk/fyzio-cviky:<commit>` a `:latest` (soukromý balíček na GitHubu) |
-| Server | Hetzner Cloud, IP `2.29.199.192`, Ubuntu, 1 CPU, 1 GB RAM |
+| Server | Hetzner Cloud, IP `<IP serveru>`, Ubuntu, 1 CPU, 1 GB RAM |
 | Složka appky na serveru | `/opt/cviky` (vlastník uživatel `esk`) |
 | Tajné hodnoty | jen na serveru v `/opt/cviky/.env` (práva 600), **nejsou v GitHubu** |
 | Compose soubor | v repu `deploy/docker-compose.yml`, nasazení ho kopíruje do `/opt/cviky/` |
@@ -62,10 +64,10 @@ Hlídání: appku nic průběžně nehlídá. `/healthz` se kontroluje jen při 
 
 | Kam | Jak |
 |---|---|
-| Server jako běžný uživatel | `ssh esk@2.29.199.192` (Mac klíč `~/.ssh/id_ed25519`). `esk` je ve skupině `docker`. |
-| Server jako root | `ssh root@2.29.199.192` (stejný klíč). Jen na věci mimo `/opt/cviky` (např. založení složky). |
+| Server jako běžný uživatel | `ssh esk@<IP serveru>` (Mac klíč `~/.ssh/id_ed25519`). `esk` je ve skupině `docker`. |
+| Server jako root | `ssh <admin>@<IP serveru>` (stejný klíč). Jen na věci mimo `/opt/cviky` (např. založení složky). |
 | GitHub | `gh` v terminálu, nebo web. Repo nastavení: Settings → Secrets and variables → Actions. |
-| Cloudflare | https://dash.cloudflare.com → přihlášení přes Google `romanzdk@gmail.com` → `romanzdk.com` → DNS → Records |
+| Cloudflare | https://dash.cloudflare.com → `romanzdk.com` → DNS → Records |
 | OpenRouter | https://openrouter.ai → Settings → Keys |
 | Hetzner | https://console.hetzner.com (server, firewall, snapshoty) |
 
@@ -73,10 +75,10 @@ GitHub Actions nastavení (repo `fyzio-cviky`):
 
 | Název | Druh | Obsah |
 |---|---|---|
-| `DEPLOY_HOST` | variable | `2.29.199.192` |
+| `DEPLOY_HOST` | variable | `<IP serveru>` |
 | `DEPLOY_URL` | variable | `https://cviky.romanzdk.com` (bez něj se po nasazení nekontroluje `/healthz`) |
 | `DEPLOY_SSH_KEY` | secret | soukromý SSH klíč; veřejná půlka je v `/home/esk/.ssh/authorized_keys` s komentářem `fyzio-cviky deploy` |
-| `DEPLOY_KNOWN_HOSTS` | secret | výstup `ssh-keyscan -t ed25519 2.29.199.192` |
+| `DEPLOY_KNOWN_HOSTS` | secret | výstup `ssh-keyscan -t ed25519 <IP serveru>` |
 
 ---
 
@@ -85,7 +87,7 @@ GitHub Actions nastavení (repo `fyzio-cviky`):
 Skoro všechno se dělá na serveru ve složce appky:
 
 ```bash
-ssh esk@2.29.199.192
+ssh esk@<IP serveru>
 cd /opt/cviky
 ```
 
@@ -173,7 +175,7 @@ Stav: `gh run list -R romanzdk/fyzio-cviky` nebo záložka Actions na GitHubu. Z
 Image je soukromý, takže server se musí do GHCR přihlásit. Potřebuješ GitHub token s právem `read:packages` (GitHub → Settings → Developer settings → Personal access tokens).
 
 ```bash
-ssh esk@2.29.199.192
+ssh esk@<IP serveru>
 cd /opt/cviky
 echo TOKEN | docker login ghcr.io -u romanzdk --password-stdin
 CVIKY_IMAGE=ghcr.io/romanzdk/fyzio-cviky:latest docker compose pull web
@@ -181,7 +183,7 @@ CVIKY_IMAGE=ghcr.io/romanzdk/fyzio-cviky:latest docker compose up -d
 docker logout ghcr.io
 ```
 
-Když se změnil `deploy/docker-compose.yml`, nejdřív ho nakopíruj z Macu: `scp deploy/docker-compose.yml esk@2.29.199.192:/opt/cviky/`.
+Když se změnil `deploy/docker-compose.yml`, nejdřív ho nakopíruj z Macu: `scp deploy/docker-compose.yml esk@<IP serveru>:/opt/cviky/`.
 
 ### Ručně, když nejde ani GHCR (postavit image přímo na serveru)
 
@@ -189,7 +191,7 @@ Pomalé (1 CPU), ale funguje bez GitHubu:
 
 ```bash
 # na Macu
-cd ~/Repos/fyzio-cviky && git archive -o /tmp/cviky.tar.gz HEAD && scp /tmp/cviky.tar.gz esk@2.29.199.192:/tmp/
+cd ~/Repos/fyzio-cviky && git archive -o /tmp/cviky.tar.gz HEAD && scp /tmp/cviky.tar.gz esk@<IP serveru>:/tmp/
 # na serveru
 mkdir -p /tmp/cviky-src && tar -xzf /tmp/cviky.tar.gz -C /tmp/cviky-src
 docker build -t ghcr.io/romanzdk/fyzio-cviky:latest /tmp/cviky-src
@@ -223,15 +225,15 @@ Soubor `/opt/cviky/.env` (práva 600). Čte ho `db`, `web` i `scheduler`. `DJANG
 | `POSTGRES_PASSWORD` | heslo databáze | `openssl rand -hex 32`. Pozor: Postgres si heslo pamatuje z prvního startu, změna v `.env` nestačí, viz níže. |
 | `DATABASE_URL` | `postgres://cviky:<heslo>@db:5432/cviky` | složit z hodnot výše |
 | `DJANGO_SECRET_KEY` | podpis přihlášení | `openssl rand -hex 32`. Změna odhlásí všechny. |
-| `OPENROUTER_API_KEY` | LLM | openrouter.ai → Settings → Keys → Create. Teď se používá klíč sdílený s ai-newsletterem (limit 20 USD). |
+| `OPENROUTER_API_KEY` | LLM | openrouter.ai → Settings → Keys → Create. |
 | `OPENROUTER_MODEL` | model, teď `deepseek/deepseek-v4.1-flash` | libovolný model z openrouter.ai/models, který umí „structured outputs“ |
 | `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` | podpis push upozornění | viz níže. Změna = všichni musí znovu zapnout upozornění. |
-| `VAPID_SUBJECT` | kontakt pro Apple, `mailto:romanzdk@gmail.com` | skutečná adresa, jinak Apple upozornění odmítá a appka při startu spadne |
+| `VAPID_SUBJECT` | kontakt pro Apple, `mailto:<kontakt>` | skutečná adresa, jinak Apple upozornění odmítá a appka při startu spadne |
 
 Úprava:
 
 ```bash
-ssh esk@2.29.199.192
+ssh esk@<IP serveru>
 cd /opt/cviky
 nano .env                                  # nebo vi
 docker compose up -d                       # přenačte .env (kontejnery se vymění)
@@ -272,7 +274,7 @@ docker compose up -d
 
 ```bash
 ssh-keygen -t ed25519 -N "" -C "fyzio-cviky deploy" -f /tmp/deploy_key
-ssh esk@2.29.199.192 'cat >> ~/.ssh/authorized_keys' < /tmp/deploy_key.pub
+ssh esk@<IP serveru> 'cat >> ~/.ssh/authorized_keys' < /tmp/deploy_key.pub
 gh secret set DEPLOY_SSH_KEY -R romanzdk/fyzio-cviky < /tmp/deploy_key
 rm /tmp/deploy_key /tmp/deploy_key.pub
 # starý klíč na serveru smaž: v ~/.ssh/authorized_keys řádek s komentářem "fyzio-cviky deploy" (ten starší)
@@ -287,12 +289,12 @@ rm /tmp/deploy_key /tmp/deploy_key.pub
 ### Ruční záloha
 
 ```bash
-ssh esk@2.29.199.192
+ssh esk@<IP serveru>
 cd /opt/cviky
 docker compose exec -T db pg_dump -U cviky cviky | gzip > ~/cviky-$(date +%F).sql.gz
 # stáhnout na Mac:
 exit
-scp esk@2.29.199.192:~/cviky-*.sql.gz ~/Downloads/
+scp esk@<IP serveru>:~/cviky-*.sql.gz ~/Downloads/
 ```
 
 ### Obnova ze zálohy
@@ -300,8 +302,8 @@ scp esk@2.29.199.192:~/cviky-*.sql.gz ~/Downloads/
 Přepíše současná data.
 
 ```bash
-scp ~/Downloads/cviky-2026-11-27.sql.gz esk@2.29.199.192:~/
-ssh esk@2.29.199.192
+scp ~/Downloads/cviky-2026-11-27.sql.gz esk@<IP serveru>:~/
+ssh esk@<IP serveru>
 cd /opt/cviky
 docker compose stop web scheduler
 docker compose exec -T db psql -U cviky -d postgres -c "DROP DATABASE cviky;" -c "CREATE DATABASE cviky OWNER cviky;"
@@ -325,7 +327,7 @@ Tabulky: `cviky_user`, `cviky_invite`, `cviky_exercise`, `cviky_series`, `cviky_
 Vždycky začni tímhle:
 
 ```bash
-ssh esk@2.29.199.192 'cd /opt/cviky && docker compose ps && docker compose logs --tail 50 web'
+ssh esk@<IP serveru> 'cd /opt/cviky && docker compose ps && docker compose logs --tail 50 web'
 curl -sI https://cviky.romanzdk.com/healthz
 ```
 
@@ -334,7 +336,7 @@ curl -sI https://cviky.romanzdk.com/healthz
 | Stránka vrací **502** | `web` neběží nebo Caddy na něj nevidí | `docker compose ps`; když `web` neběží: `docker compose logs web` a `docker compose up -d`. Když běží: zkontroluj kap. 8 (síť `cviky`, blok v Caddyfile). |
 | `web` hned spadne, v logu `RuntimeError: ... must be set` | chybí `DJANGO_SECRET_KEY` nebo `VAPID_SUBJECT` v `.env` | doplň `.env` (kap. 5), `docker compose up -d` |
 | `web` spadne na databázi | `db` neběží nebo nesedí heslo | `docker compose logs db`; heslo v `DATABASE_URL` = `POSTGRES_PASSWORD` |
-| Certifikát / HTTPS nejde | DNS neukazuje na server, nebo je záznam v Cloudflare „Proxied“ | `dig +short cviky.romanzdk.com` musí vrátit `2.29.199.192`. V Cloudflare přepni na „DNS only“. Logy: `cd /opt/esk && docker compose logs --tail 100 caddy`. |
+| Certifikát / HTTPS nejde | DNS neukazuje na server, nebo je záznam v Cloudflare „Proxied“ | `dig +short cviky.romanzdk.com` musí vrátit `<IP serveru>`. V Cloudflare přepni na „DNS only“. Logy: `cd /opt/esk && docker compose logs --tail 100 caddy`. |
 | Po nasazení **Vozopisu** přestala appka jít | někdo z Vozopis repa smazal blok `cviky.romanzdk.com` nebo síť `cviky` | kap. 8 |
 | Diktát vytvoří **prázdnou kartu** s poznámkou „Automatické zpracování se nepovedlo“ | LLM selhalo (klíč, kredit, model, výpadek) | `docker compose logs web \| grep -i openrouter`; kredit na openrouter.ai; zkus klíč: `curl -s -H "Authorization: Bearer KLIC" https://openrouter.ai/api/v1/key`. Karta jde mezitím vyplnit ručně. |
 | **Upozornění nechodí** | appka není přidaná na plochu, upozornění nejsou zapnutá, série nemá dny/čas, nebo Apple odmítá | 1) na iPhonu otevřít appku **z plochy** → Profil → Upozornění → Zapnout. 2) v administraci „Push subscriptions“ musí být řádek pro uživatele. 3) série musí mít vybraný den a čas. 4) `docker compose logs scheduler` hledej `Push failed`. 403 = špatné VAPID klíče nebo `VAPID_SUBJECT`. |
@@ -366,7 +368,7 @@ Porty 80/443 na serveru drží Caddy z Vozopisu. Proto:
 Ruční oprava, když blok nebo síť zmizí:
 
 ```bash
-ssh esk@2.29.199.192
+ssh esk@<IP serveru>
 docker network inspect cviky >/dev/null 2>&1 || docker network create cviky
 cd /opt/esk
 grep -n cviky Caddyfile docker-compose.yml     # musí najít blok i síť
@@ -413,7 +415,7 @@ Předpoklad: Ubuntu server s Dockerem a uživatelem ve skupině `docker`.
    OPENROUTER_MODEL=deepseek/deepseek-v4.1-flash
    VAPID_PUBLIC_KEY=<kap. 5>
    VAPID_PRIVATE_KEY=<kap. 5>
-   VAPID_SUBJECT=mailto:romanzdk@gmail.com
+   VAPID_SUBJECT=mailto:<kontakt>
    ```
 3. **Caddy**: buď blok v Caddy Vozopisu (kap. 8), nebo vlastní Caddy (kap. 8, poslední část).
 4. **DNS**: v Cloudflare změň A záznam `cviky` na novou IP, **DNS only**.
@@ -430,11 +432,11 @@ Nevratné. Nejdřív záloha (kap. 6), pokud data chceš.
 
 1. **Kontejnery a data** na serveru:
    ```bash
-   ssh esk@2.29.199.192
+   ssh esk@<IP serveru>
    cd /opt/cviky
    docker compose down -v          # -v smaže i databázi (volume cviky_pgdata)
    ```
-   Složku `/opt/cviky` pak smaž jako root (`ssh root@2.29.199.192` a odstranit složku `/opt/cviky`).
+   Složku `/opt/cviky` pak smaž jako root (`ssh <admin>@<IP serveru>` a odstranit složku `/opt/cviky`).
 2. **Caddy a síť ve Vozopisu**: v repu `romanzdk/vozopis` smaž blok `cviky.romanzdk.com` z `deploy/Caddyfile`, síť `cviky` u služby `caddy` a v sekci `networks` v `deploy/docker-compose.yml` a řádek `docker network inspect cviky ... || docker network create cviky` v `.github/workflows/ci.yml`. Commit + push → nasadí se samo. Pak na serveru `docker network rm cviky`.
 3. **DNS**: v Cloudflare smaž A záznam `cviky`.
 4. **SSH klíč**: na serveru v `/home/esk/.ssh/authorized_keys` smaž řádek `fyzio-cviky deploy`.
@@ -518,4 +520,3 @@ uv run ruff check .                        # kontrola kódu
 
 Bez `OPENROUTER_API_KEY` diktát vždy vrátí prázdnou kartu, bez `VAPID_*` se upozornění neposílají. Pro vyzkoušení LLM lokálně: `OPENROUTER_API_KEY=... OPENROUTER_MODEL=deepseek/deepseek-v4.1-flash uv run python manage.py runserver`.
 
-Návrh a plán v1: `docs/superpowers/specs/` a `docs/superpowers/plans/`.

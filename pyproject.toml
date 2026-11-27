@@ -1,7 +1,7 @@
 [project]
 name = "fyzio-cviky"
 version = "0.1.0"
-description = "Připomínky fyzioterapeutických cvičení"
+description = "Reminders for physiotherapy home exercises (Czech PWA)"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
