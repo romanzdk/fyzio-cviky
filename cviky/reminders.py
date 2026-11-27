@@ -67,8 +67,7 @@ def reminder_text(series: Series, neglected_count: int) -> tuple[str, str]:
 
 
 def _neglected_count(series: Series, now: datetime) -> int:
-    exercise_ids = set(series.items.values_list("exercise_id", flat=True))
-    return sum(1 for exercise, _ in neglected(series.user, now) if exercise.pk in exercise_ids)
+    return len(neglected(series.user, now))
 
 
 def _send(series: Series, now: datetime) -> None:
@@ -92,6 +91,8 @@ def _send(series: Series, now: datetime) -> None:
                 subscription.delete()
             else:
                 logger.warning("Push failed for %s: %s", subscription.endpoint, exc)
+        except Exception:
+            logger.exception("Push failed for %s", subscription.endpoint)
 
 
 def send_due(now: datetime) -> int:

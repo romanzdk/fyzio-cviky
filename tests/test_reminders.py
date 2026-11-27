@@ -280,3 +280,34 @@ def test_command_prints_count(user, settings, monkeypatch, capsys):
     )
     call_command("send_reminders")
     assert "Odesláno: 1" in capsys.readouterr().out
+
+
+def test_neglected_count_includes_other_series(user, monkeypatch, settings):
+    settings.VAPID_PRIVATE_KEY = "key"
+    sent = []
+    monkeypatch.setattr("cviky.reminders.webpush", lambda **kw: sent.append(kw["data"]))
+    now = at(2027, 3, 1, 7, 30)
+    make_series(user, weekdays=[now.weekday()], remind_at=datetime.time(7, 30), exercises=1)
+    other = make_series(user, name="Večerní", weekdays=[], exercises=1)
+    SeriesExercise.objects.filter(series=other).update(added_at=now - datetime.timedelta(days=10))
+    subscribe(user)
+    assert send_due(now) == 1
+    assert "+ 1 dlouho nedělaný" in sent[0]
+
+
+def test_unexpected_push_error_does_not_stop_other_subscriptions(user, monkeypatch, settings):
+    settings.VAPID_PRIVATE_KEY = "key"
+    sent = []
+
+    def fake_webpush(**kw):
+        if kw["subscription_info"]["endpoint"].endswith("bad"):
+            raise ConnectionError("boom")
+        sent.append(kw)
+
+    monkeypatch.setattr("cviky.reminders.webpush", fake_webpush)
+    now = at(2027, 3, 1, 7, 30)
+    make_series(user, weekdays=[now.weekday()], remind_at=datetime.time(7, 30), exercises=1)
+    subscribe(user, endpoint="https://push.example.com/bad")
+    subscribe(user, endpoint="https://push.example.com/good")
+    assert send_due(now) == 1
+    assert len(sent) == 1
