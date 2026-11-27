@@ -4,18 +4,23 @@
 {% block title %}Upozornění{% endblock %}
 
 {% block content %}
+<p class="eyebrow"><a href="{% url 'profile' %}">‹ Profil</a></p>
 <h1>Upozornění</h1>
-<p>Pro zapnutí upozornění si nejdřív přidej appku na plochu:</p>
-<p>1. Klepni na Sdílet (čtvereček se šipkou)</p>
-<p>2. Vyber Přidat na plochu</p>
-<p>3. Otevři appku z plochy a vrať se sem</p>
+<section class="card">
+  <h2>Nejdřív přidej appku na plochu</h2>
+  <ol class="steps-install">
+    <li>1. Klepni na Sdílet (čtvereček se šipkou)</li>
+    <li>2. Vyber Přidat na plochu</li>
+    <li>3. Otevři appku z plochy a vrať se sem</li>
+  </ol>
+</section>
 
 {% if not vapid_public_key %}
 <p>Upozornění nejsou na serveru nastavená.</p>
 {% else %}
 <p class="hint">Upozornění jde zapnout jen v appce otevřené z plochy.</p>
-<button type="button" id="enable-push" data-vapid-public-key="{{ vapid_public_key }}" hidden>Zapnout upozornění</button>
-<p id="push-status"></p>
+<button type="button" class="btn" id="enable-push" data-vapid-public-key="{{ vapid_public_key }}" hidden>Zapnout upozornění</button>
+<p id="push-status" class="hint"></p>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     var button = document.getElementById('enable-push');

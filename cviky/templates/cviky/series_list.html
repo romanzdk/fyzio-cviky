@@ -6,20 +6,23 @@
 {% block content %}
 <h1>Série</h1>
 
-{% for s in series %}
-<div class="card">
-  <h2>{{ s.name }}</h2>
-  <p>Dny: {{ s.weekdays|weekday_labels }}</p>
-  {% if s.remind_at %}<p>Čas: {{ s.remind_at|time:"H:i" }}</p>{% endif %}
-  <p>Počet cviků: {{ s.exercise_count }}</p>
-  <p>
-    <a href="{% url 'series_edit' s.pk %}">Upravit</a>
-    <a href="{% url 'series_delete' s.pk %}">Smazat</a>
-  </p>
+{% if series %}
+<div class="card flush">
+  {% for s in series %}
+  <a class="item" href="{% url 'series_edit' s.pk %}">
+    <span class="text">
+      <strong>{{ s.name }}</strong>
+      <small>{{ s.exercise_count|exercises_label }}{% if s.weekdays %} · {{ s.weekdays|weekday_labels }}{% endif %}{% if s.remind_at %} · {{ s.remind_at|time:"H:i" }}{% endif %}</small>
+    </span>
+    <span class="chev" aria-hidden="true">›</span>
+  </a>
+  {% endfor %}
 </div>
-{% empty %}
-<p>Zatím žádné série.</p>
-{% endfor %}
+{% else %}
+<div class="card empty">
+  <p>Zatím žádné série. Série je skupina cviků, kterou ti appka připomene ve vybrané dny.</p>
+</div>
+{% endif %}
 
-<p><a href="{% url 'series_create' %}">Nová série</a></p>
+<a class="btn secondary" href="{% url 'series_create' %}">Nová série</a>
 {% endblock %}

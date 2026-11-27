@@ -3,6 +3,7 @@
 {% block title %}{% if series %}Upravit sérii{% else %}Nová série{% endif %}{% endblock %}
 
 {% block content %}
+<p class="eyebrow"><a href="{% url 'series_list' %}">‹ Série</a></p>
 <h1>{% if series %}Upravit sérii{% else %}Nová série{% endif %}</h1>
 
 <form method="post">
@@ -12,30 +13,37 @@
   {{ form.name.errors }}
   {{ form.name }}
 
-  <label>Dny</label>
-  {{ form.weekdays.errors }}
-  {{ form.weekdays }}
+  <fieldset class="weekdays">
+    <legend>Dny</legend>
+    {{ form.weekdays.errors }}
+    {{ form.weekdays }}
+  </fieldset>
 
   <label for="{{ form.remind_at.id_for_label }}">Připomenout v</label>
   {{ form.remind_at.errors }}
   {{ form.remind_at }}
 
-  <h2>Cviky</h2>
-  {% for row in rows %}
-  <div class="card">
-    <label>
-      <input type="checkbox" name="exercises" value="{{ row.exercise.pk }}"{% if row.checked %} checked{% endif %}>
-      {{ row.exercise.title }}
-    </label>
-    <label for="id_order_{{ row.exercise.pk }}">Pořadí</label>
-    <input id="id_order_{{ row.exercise.pk }}" type="number" name="order_{{ row.exercise.pk }}" value="{{ row.order }}" min="0">
+  <h3>Cviky v sérii</h3>
+  {% if rows %}
+  <div class="card flush">
+    {% for row in rows %}
+    <div class="pick">
+      <label>
+        <input type="checkbox" name="exercises" value="{{ row.exercise.pk }}"{% if row.checked %} checked{% endif %}>
+        {{ row.exercise.title }}
+      </label>
+      <input id="id_order_{{ row.exercise.pk }}" type="number" name="order_{{ row.exercise.pk }}" value="{{ row.order }}" min="0" aria-label="Pořadí: {{ row.exercise.title }}" placeholder="#">
+    </div>
+    {% endfor %}
   </div>
-  {% empty %}
-  <p>Zatím žádné cviky.</p>
-  {% endfor %}
+  <p class="hint">Číslo vpravo je pořadí cviku v sérii.</p>
+  {% else %}
+  <div class="card empty"><p>Zatím žádné cviky.</p><a href="{% url 'exercise_create' %}">Nadiktovat první cvik</a></div>
+  {% endif %}
 
   <button type="submit">Uložit</button>
 </form>
-
-<p><a href="{% url 'series_list' %}">Zpět na série</a></p>
+{% if series %}
+<a class="btn ghost" href="{% url 'series_delete' series.pk %}">Smazat sérii</a>
+{% endif %}
 {% endblock %}

@@ -1,22 +1,14 @@
+import re
+
 from django import template
 
-from cviky.choices import AREAS, POSITIONS, WEEKDAYS
+from cviky.choices import WEEKDAYS
 
 register = template.Library()
 
-AREA_LABELS = dict(AREAS)
-POSITION_LABELS = dict(POSITIONS)
+LEADING_NUMBER = re.compile(r"^\s*\d+\s*[.)](\s+|$)")
+
 WEEKDAY_LABELS = dict(WEEKDAYS)
-
-
-@register.filter
-def area_label(key):
-    return AREA_LABELS.get(key, key)
-
-
-@register.filter
-def position_label(key):
-    return POSITION_LABELS.get(key, key)
 
 
 @register.filter
@@ -36,3 +28,18 @@ def days_label(count):
     if 2 <= count <= 4:
         return f"{count} dny"
     return f"{count} dní"
+
+
+@register.filter
+def exercises_label(count):
+    if count == 1:
+        return f"{count} cvik"
+    if 2 <= count <= 4:
+        return f"{count} cviky"
+    return f"{count} cviků"
+
+
+@register.filter
+def step_lines(text):
+    lines = (LEADING_NUMBER.sub("", line).strip() for line in text.splitlines())
+    return [line for line in lines if line]

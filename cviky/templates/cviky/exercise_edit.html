@@ -3,11 +3,11 @@
 {% block title %}Upravit cvik{% endblock %}
 
 {% block content %}
+<p class="eyebrow"><a href="{% url 'exercise_detail' exercise.pk %}">‹ Zpět</a></p>
 <h1>Upravit cvik</h1>
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
   <button type="submit">Uložit</button>
 </form>
-<p><a href="{% url 'exercise_detail' exercise.pk %}">Zpět</a></p>
 {% endblock %}

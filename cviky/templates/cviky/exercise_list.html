@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Cviky{% endblock %}
 
@@ -6,35 +7,44 @@
 <h1>Cviky</h1>
 
 <form method="get">
-  <label for="id_q">Hledat</label>
-  <input id="id_q" type="search" name="q" value="{{ q }}">
-  <label for="id_area">Oblast</label>
-  <select id="id_area" name="area">
-    <option value="">vše</option>
-    {% for key, label in areas %}<option value="{{ key }}"{% if key == area %} selected{% endif %}>{{ label }}</option>{% endfor %}
-  </select>
-  <label for="id_position">Poloha</label>
-  <select id="id_position" name="position">
-    <option value="">vše</option>
-    {% for key, label in positions %}<option value="{{ key }}"{% if key == position %} selected{% endif %}>{{ label }}</option>{% endfor %}
-  </select>
-  <label for="id_serie">Série</label>
-  <select id="id_serie" name="serie">
-    <option value="">vše</option>
-    {% for s in series %}<option value="{{ s.pk }}"{% if s.pk|stringformat:"s" == serie %} selected{% endif %}>{{ s.name }}</option>{% endfor %}
-  </select>
-  <button type="submit">Hledat</button>
+  <div class="search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+    <input id="id_q" type="search" name="q" value="{{ q }}" placeholder="Hledat (krk, páteř…)" aria-label="Hledat">
+  </div>
+  <div class="filters">
+    <select id="id_area" name="area" aria-label="Oblast" onchange="this.form.submit()">
+      <option value="">Oblast: vše</option>
+      {% for key, label in areas %}<option value="{{ key }}"{% if key == area %} selected{% endif %}>{{ label }}</option>{% endfor %}
+    </select>
+    <select id="id_position" name="position" aria-label="Poloha" onchange="this.form.submit()">
+      <option value="">Poloha: vše</option>
+      {% for key, label in positions %}<option value="{{ key }}"{% if key == position %} selected{% endif %}>{{ label }}</option>{% endfor %}
+    </select>
+    <select id="id_serie" name="serie" aria-label="Série" onchange="this.form.submit()">
+      <option value="">Série: vše</option>
+      {% for s in series %}<option value="{{ s.pk }}"{% if s.pk|stringformat:"s" == serie %} selected{% endif %}>{{ s.name }}</option>{% endfor %}
+    </select>
+  </div>
+  <button type="submit" hidden>Hledat</button>
 </form>
 
-{% for e in exercises %}
-<div class="card">
-  {% include "cviky/ilustrace.html" with area=e.area position=e.position %}
-  <h2><a href="{% url 'exercise_detail' e.pk %}">{{ e.title }}</a></h2>
-  {% if e.tags %}<p>{{ e.tags|join:", " }}</p>{% endif %}
+{% if exercises %}
+<div class="card flush">
+  {% for e in exercises %}
+  <a class="item" href="{% url 'exercise_detail' e.pk %}">
+    <span class="thumb">{% if e.area %}<img src="{% static 'cviky/body/'|add:e.area|add:'.svg' %}" alt="">{% endif %}</span>
+    <span class="text">
+      <strong>{{ e.title }}</strong>
+      <small>{% if e.area %}{{ e.get_area_display }}{% endif %}{% if e.area and e.position %} · {% endif %}{% if e.position %}{{ e.get_position_display }}{% endif %}{% if e.tags and not e.area and not e.position %}{{ e.tags|join:", " }}{% endif %}</small>
+    </span>
+    <span class="chev" aria-hidden="true">›</span>
+  </a>
+  {% endfor %}
 </div>
-{% empty %}
-<p>Zatím žádné cviky.</p>
-{% endfor %}
-
-<p><a href="{% url 'exercise_create' %}">Přidat další cvik</a></p>
+{% else %}
+<div class="card empty">
+  <p>{% if q or area or position or serie %}Nic nenalezeno.{% else %}Zatím žádné cviky.{% endif %}</p>
+  <a href="{% url 'exercise_create' %}">Přidat další cvik</a>
+</div>
+{% endif %}
 {% endblock %}

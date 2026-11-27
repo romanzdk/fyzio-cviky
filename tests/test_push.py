@@ -142,7 +142,7 @@ def test_manifest_fields(client):
     assert manifest["lang"] == "cs"
     assert manifest["start_url"] == "/"
     assert manifest["display"] == "standalone"
-    assert manifest["background_color"] == "#ffffff"
+    assert manifest["background_color"] == "#f4f6f5"
     assert manifest["theme_color"] == "#2e7d32"
     sizes = {icon["sizes"] for icon in manifest["icons"]}
     assert {"192x192", "512x512"} <= sizes
@@ -224,6 +224,12 @@ def test_base_registers_service_worker_and_links(logged_in):
     assert "apple-touch-icon" in content
     assert 'name="theme-color" content="#2e7d32"' in content
     assert 'name="apple-mobile-web-app-capable" content="yes"' in content
+
+
+@pytest.mark.django_db
+def test_profile_links_to_notification_setup(logged_in):
+    content = logged_in.get(reverse("profile")).content.decode()
+    assert 'href="/instalace/"' in content
     assert "Upozornění" in content
 
 

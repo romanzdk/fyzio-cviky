@@ -13,6 +13,21 @@ class ExerciseForm(forms.ModelForm):
             "steps": forms.Textarea(attrs={"rows": 5}),
             "cautions": forms.Textarea(attrs={"rows": 3}),
         }
+        labels = {
+            "title": "Název",
+            "area": "Oblast",
+            "position": "Poloha",
+            "tags": "Štítky",
+            "steps": "Postup",
+            "cautions": "Na co dát pozor",
+            "reps": "Opakování",
+        }
+        help_texts = {"tags": "Oddělené čárkou.", "steps": "Jeden krok na řádek."}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for name in ("area", "position"):
+            self.fields[name].choices = [("", "— nevybráno —"), *self.fields[name].choices[1:]]
 
 
 class SeriesForm(forms.ModelForm):

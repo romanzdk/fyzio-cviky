@@ -134,7 +134,7 @@ def test_list_shows_only_own_series_with_summary(logged_in, user, other):
     assert "Cizí série" not in content
     assert "Po" in content and "St" in content and "Pá" in content
     assert "07:30" in content
-    assert "Počet cviků: 1" in content
+    assert "1 cvik" in content
 
 
 @pytest.mark.django_db
