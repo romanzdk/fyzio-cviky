@@ -91,6 +91,7 @@ def test_privacy_page_is_public_and_linked(client, django_user_model):
     page = html.unescape(client.get("/soukromi/").content.decode())
     for fact in ("Roman Žydyk", "mailto:romanzdk@gmail.com", "Helsinkách", "OpenRouter", "GoatCounter", "uoou.gov.cz"):
         assert fact in page
+    assert "standardní smluvní doložky EU (SCC)" in page
     assert 'href="/soukromi/"' in client.get("/").content.decode()
     client.force_login(django_user_model.objects.create_user(username="a", password="SilneHeslo123"))
     assert 'href="/soukromi/"' in client.get("/profil/").content.decode()
