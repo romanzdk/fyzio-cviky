@@ -16,7 +16,7 @@
 
 {% if exercise.reps or exercise.tags %}
 <div class="chips">
-  {% if exercise.reps %}<span class="pill">{{ exercise.reps }}</span>{% endif %}
+  {% if exercise.reps %}<span class="pill">Opakování: {{ exercise.reps }}</span>{% endif %}
   {% for tag in exercise.tags %}<span class="chip">{{ tag }}</span>{% endfor %}
 </div>
 {% endif %}

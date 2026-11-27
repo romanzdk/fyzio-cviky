@@ -75,6 +75,8 @@ def test_login_is_czech_even_for_english_browser(client):
         ("Sedni si.\nOtoč hlavu.", ["Sedni si.", "Otoč hlavu."]),
         ("1. Sedni si.\n2) Otoč hlavu.\n\n  3 . Vydrž", ["Sedni si.", "Otoč hlavu.", "Vydrž"]),
         ("10× opakuj", ["10× opakuj"]),
+        ("3.5 kg závaží", ["3.5 kg závaží"]),
+        ("1.\nLehni si", ["Lehni si"]),
         ("", []),
     ],
 )
@@ -123,3 +125,21 @@ def test_exercise_form_is_czech(logged_in, django_user_model):
 def test_profile_save_shows_confirmation(logged_in):
     response = logged_in.post("/profil/", {"neglect_days": 5}, follow=True)
     assert "Uloženo" in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_detail_labels_reps(logged_in, django_user_model):
+    user = django_user_model.objects.get(username="design")
+    exercise = Exercise.objects.create(user=user, title="Krk", reps="10")
+    assert "Opakování: 10" in logged_in.get(f"/cviky/{exercise.pk}/").content.decode()
+
+
+@pytest.mark.django_db
+def test_check_button_label_does_not_change_with_state(logged_in, django_user_model):
+    user = django_user_model.objects.get(username="design")
+    exercise = Exercise.objects.create(user=user, title="Krk")
+    series = Series.objects.create(user=user, name="S", weekdays=list(range(7)))
+    series.items.create(exercise=exercise, order=0)
+    assert 'aria-label="Hotovo: Krk"' in logged_in.get("/").content.decode()
+    logged_in.post("/hotovo/", {"exercise": exercise.pk, "series": series.pk})
+    assert 'aria-label="Hotovo: Krk"' in logged_in.get("/").content.decode()

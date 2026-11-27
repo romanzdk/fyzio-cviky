@@ -6,7 +6,7 @@ from cviky.choices import WEEKDAYS
 
 register = template.Library()
 
-LEADING_NUMBER = re.compile(r"^\s*\d+\s*[.)]\s*")
+LEADING_NUMBER = re.compile(r"^\s*\d+\s*[.)](\s+|$)")
 
 WEEKDAY_LABELS = dict(WEEKDAYS)
 
@@ -41,4 +41,5 @@ def exercises_label(count):
 
 @register.filter
 def step_lines(text):
-    return [LEADING_NUMBER.sub("", line).strip() for line in text.splitlines() if line.strip()]
+    lines = (LEADING_NUMBER.sub("", line).strip() for line in text.splitlines())
+    return [line for line in lines if line]
