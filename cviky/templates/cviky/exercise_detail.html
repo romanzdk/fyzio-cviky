@@ -6,6 +6,7 @@
 {% block content %}
 <p class="eyebrow"><a href="{% url 'exercise_list' %}">‹ Cviky</a></p>
 <h1>{{ exercise.title }}</h1>
+{% if exercise.original_text %}<p class="hint">Kartu z diktátu sestavila umělá inteligence (jazykový model). Může v ní být chyba, zkontroluj ji.</p>{% endif %}
 
 {% if exercise.area or exercise.position %}
 <div class="figures">
