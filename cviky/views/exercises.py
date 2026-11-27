@@ -1,3 +1,5 @@
+import unicodedata
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.lookups import Unaccent
 from django.db.models import CharField, F, Func, Q, Value
@@ -12,6 +14,23 @@ MAX_TEXT_LENGTH = 5000
 
 EMPTY_TEXT_ERROR = "Zadej popis cviku."
 TOO_LONG_ERROR = f"Popis je příliš dlouhý (max {MAX_TEXT_LENGTH} znaků)."
+
+
+def _fold(text: str) -> str:
+    return "".join(c for c in unicodedata.normalize("NFKD", text.lower()) if not unicodedata.combining(c))
+
+
+def _keys_with_label(choices, word: str) -> list[str]:
+    folded = _fold(word)
+    if len(folded) < 3:
+        return []
+    # Czech inflects word endings (páteř/páteře, záda/zádech), so a 3-letter stem is compared too.
+    stem = folded[:3]
+    return [
+        key
+        for key, label in choices
+        if folded in _fold(label) or any(part.startswith(stem) for part in _fold(label).replace("/", " ").split())
+    ]
 
 
 def search_exercises(user, q: str, area: str = "", position: str = "", series_id: int | None = None):
@@ -36,6 +55,8 @@ def search_exercises(user, q: str, area: str = "", position: str = "", series_id
                 | Q(steps__unaccent__icontains=word)
                 | Q(original_text__unaccent__icontains=word)
                 | Q(tags_text__unaccent__icontains=word)
+                | Q(area__in=_keys_with_label(AREAS, word))
+                | Q(position__in=_keys_with_label(POSITIONS, word))
             )
     return queryset
 
