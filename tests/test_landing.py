@@ -109,3 +109,10 @@ def test_missing_page_is_czech_and_links_home(client):
     html = response.content.decode()
     assert "Stránka nenalezena" in html
     assert 'href="/"' in html
+
+
+@pytest.mark.django_db
+def test_saving_profile_sets_no_extra_cookie(client, django_user_model):
+    client.force_login(django_user_model.objects.create_user(username="c", password="SilneHeslo123"))
+    response = client.post("/profil/", {"neglect_days": 5})
+    assert "messages" not in response.cookies

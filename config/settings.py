@@ -110,6 +110,8 @@ def _vapid_subject(debug: bool) -> str:
 VAPID_SUBJECT = _vapid_subject(DEBUG)
 
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 365
+# The privacy page promises only the session and CSRF cookies.
+MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
 
 GOATCOUNTER = "https://cviky.goatcounter.com"
 SECURE_CSP = {
