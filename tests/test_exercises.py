@@ -125,11 +125,25 @@ def test_search_matches_area_and_position_labels(user):
     hrudni = Exercise.objects.create(user=user, title="Rotace", area="hrudni", position="sed")
     bederni = Exercise.objects.create(user=user, title="Most", area="bederni", position="leh_zada")
     Exercise.objects.create(user=user, title="Kolena", area="kolena", position="stoj")
+    panev = Exercise.objects.create(user=user, title="Pánev", area="panev", position="leh_bricho")
 
     assert set(exercises_views.search_exercises(user, "páteř")) == {hrudni, bederni}
     assert set(exercises_views.search_exercises(user, "pater zadech")) == {bederni}
     assert set(exercises_views.search_exercises(user, "SED")) == {hrudni}
-    assert set(exercises_views.search_exercises(user, "kycle")) == set()
+    assert set(exercises_views.search_exercises(user, "kycle")) == {panev}
+    assert set(exercises_views.search_exercises(user, "xyz")) == set()
+
+
+@pytest.mark.django_db
+def test_search_matches_other_word_forms_of_labels(user):
+    hrudni = Exercise.objects.create(user=user, title="Rotace", area="hrudni", position="sed")
+    bederni = Exercise.objects.create(user=user, title="Most", area="bederni", position="leh_zada")
+    bricho = Exercise.objects.create(user=user, title="Plavec", area="cele_telo", position="leh_bricho")
+
+    assert set(exercises_views.search_exercises(user, "páteře")) == {hrudni, bederni}
+    assert set(exercises_views.search_exercises(user, "záda")) == {bederni}
+    assert set(exercises_views.search_exercises(user, "břicho")) == {bricho}
+    assert set(exercises_views.search_exercises(user, "na")) == set()
 
 
 @pytest.mark.django_db

@@ -22,7 +22,15 @@ def _fold(text: str) -> str:
 
 def _keys_with_label(choices, word: str) -> list[str]:
     folded = _fold(word)
-    return [key for key, label in choices if folded in _fold(label)]
+    if len(folded) < 3:
+        return []
+    # Czech inflects word endings (páteř/páteře, záda/zádech), so a 3-letter stem is compared too.
+    stem = folded[:3]
+    return [
+        key
+        for key, label in choices
+        if folded in _fold(label) or any(part.startswith(stem) for part in _fold(label).replace("/", " ").split())
+    ]
 
 
 def search_exercises(user, q: str, area: str = "", position: str = "", series_id: int | None = None):
