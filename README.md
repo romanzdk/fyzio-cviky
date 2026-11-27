@@ -16,7 +16,7 @@ A small Czech-language PWA built for iPhone (add to Home Screen), also usable on
 - **Routines** — group exercises into series with weekdays, a reminder time and an order.
 - **Today** — today's series with a progress bar and one-tap check-off, plus a *“long time no see”* card for exercises not done for N days (default 7).
 - **Push reminders** — Web Push to the home-screen app, at most once per series per day, skipped when everything is done.
-- **Search** — diacritic-insensitive full text over titles, steps, tags and body-area / position names (`pater` finds *páteř*).
+- **Search** — diacritic-insensitive full text over titles, steps, the original dictated text, tags and body-area / position names (`pater` finds *páteř*).
 - **Clean UI** — hand-written CSS, light and automatic dark mode, bottom tab bar on phones, sidebar on wide screens.
 - **Invite-only accounts** — invites are one-time links created in the admin.
 
@@ -61,6 +61,8 @@ uv run ruff check .
 | `DATABASE_URL` | PostgreSQL connection |
 | `OPENROUTER_API_KEY`, `OPENROUTER_MODEL` | LLM for structuring dictated text |
 | `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` | Web Push keys |
+| `WEB_CONCURRENCY` | gunicorn workers (default `2` in the Docker image) |
+| `DJANGO_INSECURE_COOKIES` | `1` drops the `Secure` cookie flag and the proxy HTTPS header (local runs with debug off, without HTTPS) |
 | `VAPID_SUBJECT` | `mailto:` contact; required when debug is off (Apple rejects pushes without a real one) |
 
 ## Deployment and operations

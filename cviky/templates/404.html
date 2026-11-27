@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block title %}Stránka nenalezena{% endblock %}
+
+{% block content %}
+<h1>Stránka nenalezena</h1>
+<p>Tahle stránka neexistuje nebo už byla smazaná.</p>
+<a class="btn" href="{% url 'home' %}">Zpět na úvod</a>
+{% endblock %}

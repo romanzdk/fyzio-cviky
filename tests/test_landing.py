@@ -100,3 +100,19 @@ def test_favicon_redirects_to_static_icon(client):
     response = client.get("/favicon.ico")
     assert response.status_code == 301
     assert response.url.endswith("cviky/icon-192.png")
+
+
+@pytest.mark.django_db
+def test_missing_page_is_czech_and_links_home(client):
+    response = client.get("/neexistuje/")
+    assert response.status_code == 404
+    html = response.content.decode()
+    assert "Stránka nenalezena" in html
+    assert 'href="/"' in html
+
+
+@pytest.mark.django_db
+def test_saving_profile_sets_no_extra_cookie(client, django_user_model):
+    client.force_login(django_user_model.objects.create_user(username="c", password="SilneHeslo123"))
+    response = client.post("/profil/", {"neglect_days": 5})
+    assert "messages" not in response.cookies

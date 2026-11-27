@@ -61,7 +61,7 @@ a { color: var(--primary); text-decoration: none; }
 
 h1 { margin: 4px 0 16px; font-size: 30px; line-height: 1.15; font-weight: 750; letter-spacing: -0.02em; }
 h2 { margin: 0; font-size: 17px; font-weight: 650; }
-h3 { margin: 20px 0 8px; font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+h3, h2.sub { margin: 20px 0 8px; font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
 p { margin: 0 0 12px; }
 
 .eyebrow { margin: 0; font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
@@ -234,6 +234,7 @@ fieldset.weekdays { border: 0; margin: 0; padding: 0; min-width: 0; }
 .btn.secondary { background: var(--primary-soft); color: var(--primary); }
 .btn.danger { background: var(--danger-soft); color: var(--danger); }
 .btn.ghost { background: transparent; color: var(--muted); }
+button:disabled { opacity: 0.6; cursor: wait; }
 .btn-row { display: flex; gap: 8px; }
 .btn-row .btn { margin-top: 8px; }
 
@@ -355,6 +356,7 @@ fieldset.weekdays { border: 0; margin: 0; padding: 0; min-width: 0; }
 .preview { pointer-events: none; user-select: none; }
 .contact { max-width: 36rem; margin: 0 auto; padding: 24px 0 calc(24px + env(safe-area-inset-bottom)); text-align: center; color: var(--muted); border-top: 1px solid var(--line); }
 .contact a { font-weight: 600; }
+.prose a, .hint a, .contact a { text-decoration: underline; }
 .prose { max-width: 40rem; margin: 0 auto; }
 .prose h2 { margin: 24px 0 8px; }
 .prose li { margin: 6px 0; }
